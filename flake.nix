@@ -7,30 +7,33 @@
       url = "github:nix-community/emacs-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = { ... }@inputs:
-    {
-      homeManagerModules.default = { system, ...}:
-        let
-          pkgs = import inputs.nixpkgs {
-            inherit system;
-            overlays = [(import inputs.emacs-overlay)];
-          };
-        in
+    inputs.flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import inputs.nixpkgs {
+          inherit system;
+          overlays = [(import inputs.emacs-overlay)];
+        };
+      in
+      {
+        homeManagerModules.default = { ... }:
           {
-        programs.emacs = {
-          enable = true;
-          package = pkgs.emacs-unstable-pgtk;
-          extraPackages = import ./epkgs { inherit pkgs; };
-        };
+              programs.emacs = {
+                enable = true;
+                package = pkgs.emacs-unstable-pgtk;
+                extraPackages = import ./epkgs { inherit pkgs; };
+              };
 
-        home.file = {
-          ".emacs.d/init.el".source = ./init.el;
-          ".emacs.d/early-init.el".source = ./early-init.el;
-          ".emacs.d/templates".source = ./templates;
-          ".ddskk/init".source = ./.ddskk/init;
-        };
-      };
-    };
+              home.file = {
+                ".emacs.d/init.el".source = ./init.el;
+                ".emacs.d/early-init.el".source = ./early-init.el;
+                ".emacs.d/templates".source = ./templates;
+                ".ddskk/init".source = ./.ddskk/init;
+              };
+          };
+      }
+    );
 }
