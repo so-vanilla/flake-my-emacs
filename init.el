@@ -5,8 +5,6 @@
 ;;; Commentary:
 
 ;;; Code:
-(setq lsp-client 'lsp-mode)
-
 (let ((private-hosts '("vanilla"))
       (current-host (system-name)))
   (defvar is-private-host
@@ -365,50 +363,35 @@ _C-n_: down
     (embark-collect-mode . consult-preview-at-point-mode)))
 
 (leaf *completion
-  :init
-  (defgroup lsp-client-settings nil
-    "LSPクライアント設定."
-    :group 'programming)
-
-  (defcustom my-default-lsp-client 'lsp-mode
-    "デフォルトのLSPクライアントを選択します."
-    :type '(choice (const :tag "lsp-mode" lsp-mode)
-                   (const :tag "Eglot" eglot))
-    :group 'lsp-client-settings)
-
-  (defcustom my-enabled-lsp-servers
-    '()
-    "有効なLSPサーバのリスト."
-    :type '(repeat string)
-    :group 'lsp-client-settings)
-
-  :custom
-  (((my-default-lsp-client . 'lsp-mode)))
-    
   :config
-  (leaf eglot
-    :tag "builtin"
-    :if (eq my-default-lsp-client 'eglot)
-    :hook
-    ((c-mode-hook . eglot-ensure)
-     (clojure-mode-hook . eglot-ensure)
-     (css-mode-hook . eglot-ensure)
-     (dockerfile-mode . eglot-ensure)
-     (go-mode-hook . eglot-ensure)
-     (latex-mode-hook . eglot-ensure)
-     (lua-mode-hook . eglot-ensure)
-     (markdown-mode-hook . eglot-ensure)
-     (mhtml-mode-hook . eglot-ensure)
-     (java-mode-hook . eglot-ensure)
-     (js-mode-hook . eglot-ensure)
-     (nix-mode-hook . eglot-ensure)
-     (python-mode-hook . eglot-ensure)
-     (rust-mode-hook . eglot-ensure)
-     (yaml-ts-mode-hook . eglot-ensure)))
+  (if (file-exists-p "~/repos/github.com/jadestrong/lsp-proxy")
+      (progn
+        (add-to-list 'load-path "~/repos/github.com/jadestrong/lsp-proxy")
+        (leaf lsp-proxy
+          :url "https://github.com/jadestrong/lsp-proxy"
+          :ensure nil
+          :hook
+          ((c-mode-hook . lsp-proxy-mode)
+           (clojure-mode-hook . lsp-proxy-mode)
+           (css-mode-hook . lsp-proxy-mode)
+           (dockerfile-mode . lsp-proxy-mode)
+           (go-mode-hook . lsp-proxy-mode)
+           (latex-mode-hook . lsp-proxy-mode)
+           (lua-mode-hook . lsp-proxy-mode)
+           (markdown-mode-hook . lsp-proxy-mode)
+           (mhtml-mode-hook . lsp-proxy-mode)
+           (java-mode-hook . lsp-proxy-mode)
+           (js-mode-hook . lsp-proxy-mode)
+           (nix-mode-hook . lsp-proxy-mode)
+           (python-mode-hook . lsp-proxy-mode)
+           (rust-mode-hook . lsp-proxy-mode)
+           (terraform-mode-hook . lsp-proxy-mode)
+           (yaml-ts-mode-hook . lsp-proxy-mode)
+           (yaml-ts-mode-hook . lsp-proxy-mode)))))
 
   (leaf lsp-mode
     :url "https://github.com/emacs-lsp/lsp-mode"
-    :if (eq my-default-lsp-client 'lsp-mode)
+    :if nil
     :hook
     ((c-mode-hook . lsp)
      (clojure-mode-hook . lsp)
