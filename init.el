@@ -5,12 +5,22 @@
 ;;; Commentary:
 
 ;;; Code:
+(defmacro when-darwin (&rest body)
+  (when (string= system-type "darwin")
+    `(progn ,@body)))
+
 (let ((private-hosts '("vanilla"))
       (current-host (system-name)))
   (defvar is-private-host
     (if (member current-host private-hosts)
         t
       nil)))
+
+(when-darwin
+ (setq mac-option-modifier 'super
+       mac-command-modifier 'meta
+       ns-option-modifier 'super
+       ns-command-modifier 'meta))
 
 (use-package leaf)
 
@@ -78,7 +88,7 @@
   (leaf simple
     :tag "builtin"
     :preface
-    (defun clipboard-copy (text)
+    (defun my/clipboard-copy-wayland (text)
       (setq copy-process (make-process :name "clipboard-copy"
 					                   :buffer nil
 					                   :command '("wl-copy" "-n")
@@ -86,10 +96,21 @@
 					                   :noquery t))
       (process-send-string copy-process text)
       (process-send-eof copy-process))
-    (defun clipboard-paste ()
+    
+    (defun my/clipboard-paste-wayland ()
       (if (and copy-process (process-live-p copy-process))
 	      nil
 	    (shell-command-to-string "wl-paste -n | tr -d \\r")))
+    
+    (defun my/clipboard-copy-darwin (text)
+      (let ((process-connection-type nil))
+        (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+          (process-send-string proc text)
+          (process-send-eof proc))))
+    
+    (defun my/clipboard-paste-darwin ()
+      (shell-command-to-string "pbpaste"))
+    
     (defun my-move-beginning-of-line ()
       "Move point to first non-whitespace character or beginning-of-line."
       (interactive "^")
@@ -97,10 +118,12 @@
 	    (back-to-indentation)
 	    (when (= orig-point (point))
 	      (move-beginning-of-line 1))))
+    
     (defun my-undo ()
       (interactive)
       (undo)
       (hydra-undo/body))
+    
     (defun my-redo ()
       (interactive)
       (undo-redo)
@@ -111,8 +134,11 @@
     ((copy-process . nil)
      (indent-tabs-mode . nil))
     :config
-    (setq interprogram-cut-function 'clipboard-copy)
-    (setq interprogram-paste-function 'clipboard-paste)
+    (if (string= system-type "darwin")
+        (setq interprogram-cut-function 'my/clipboard-copy-darwin
+              interprogram-paste-function 'my/clipboard-paste-darwin)
+      (setq interprogram-cut-function 'my/clipboard-copy-wayland
+            interprogram-paste-function 'my/clipboard-paste-wayland))
     :bind
     (("C-x u" . my-undo)
      ("C-x r" . my-redo)
