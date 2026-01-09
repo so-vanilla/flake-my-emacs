@@ -19,8 +19,9 @@
         };
       in
       {
-        homeManagerModules.default = { ... }:
-          {
+        homeManagerModules = {
+          default = { ... }:
+            {
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-unstable-pgtk;
@@ -33,7 +34,38 @@
                 ".emacs.d/templates".source = ./templates;
                 ".ddskk/init".source = ./.ddskk/init;
               };
-          };
+            };
+          purepkgs = { ... }:
+            {
+              programs.emacs = {
+                enable = true;
+                package = pkgs.emacs;
+                extraPackages = import ./epkgs { inherit pkgs; };
+              };
+
+              home.file = {
+                ".emacs.d/init.el".source = ./init.el;
+                ".emacs.d/early-init.el".source = ./early-init.el;
+                ".emacs.d/templates".source = ./templates;
+                ".ddskk/init".source = ./.ddskk/init;
+              };
+            };
+          macport = { ... }:
+            {
+              programs.emacs = {
+                enable = true;
+                package = pkgs.emacs-macport;
+                extraPackages = import ./epkgs { inherit pkgs; };
+              };
+
+              home.file = {
+                ".emacs.d/init.el".source = ./init.el;
+                ".emacs.d/early-init.el".source = ./early-init.el;
+                ".emacs.d/templates".source = ./templates;
+                ".ddskk/init".source = ./.ddskk/init;
+              };
+            };
+        };
       }
     );
 }
