@@ -413,7 +413,11 @@ _C-n_: down
            (rust-mode-hook . lsp-proxy-mode)
            (terraform-mode-hook . lsp-proxy-mode)
            (yaml-ts-mode-hook . lsp-proxy-mode)
-           (yaml-ts-mode-hook . lsp-proxy-mode)))))
+           (yaml-ts-mode-hook . lsp-proxy-mode))
+          :config
+          (leaf yasnippet
+            :custom
+            ((yas-snippet-dirs . nil))))))
 
   (leaf lsp-mode
     :url "https://github.com/emacs-lsp/lsp-mode"
