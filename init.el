@@ -949,7 +949,8 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
           (swift "https://github.com/tree-sitter/tree-sitter-swift")
           (toml "https://github.com/tree-sitter/tree-sitter-toml")
           (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-          (yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml"))))
+          (yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml")))
+     (treesit-font-lock-level . 4))
     :config
     (defun my-treesit-install-all-grammars ()
       "Install all tree-sitter grammars."
