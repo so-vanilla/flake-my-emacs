@@ -487,7 +487,8 @@ _C-n_: down
     :custom
     ((corfu-auto . t)
      (corfu-auto-delay . 0)
-     (corfu-auto-prefix . 1))
+     (corfu-auto-prefix . 1)
+     (corfu-popupinfo-delay . '(0.1 . 0.1)))
     :bind
     ((corfu-map
       ("C-g" . corfu-quit)
