@@ -925,6 +925,40 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
 
 (leaf *language
   :config
+  (leaf treesit
+    :tag "builtin"
+    :custom
+    ((treesit-language-source-alist
+      . '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+          (c "https://github.com/tree-sitter/tree-sitter-c")
+          (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+          (css "https://github.com/tree-sitter/tree-sitter-css")
+          (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
+          (go "https://github.com/tree-sitter/tree-sitter-go")
+          (hcl "https://github.com/tree-sitter-grammars/tree-sitter-hcl")
+          (html "https://github.com/tree-sitter/tree-sitter-html")
+          (java "https://github.com/tree-sitter/tree-sitter-java")
+          (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
+          (json "https://github.com/tree-sitter/tree-sitter-json")
+          (kotlin "https://github.com/fwcd/tree-sitter-kotlin")
+          (lua "https://github.com/tree-sitter-grammars/tree-sitter-lua")
+          (make "https://github.com/alemuller/tree-sitter-make")
+          (nix "https://github.com/nix-community/tree-sitter-nix")
+          (python "https://github.com/tree-sitter/tree-sitter-python")
+          (rust "https://github.com/tree-sitter/tree-sitter-rust")
+          (swift "https://github.com/tree-sitter/tree-sitter-swift")
+          (toml "https://github.com/tree-sitter/tree-sitter-toml")
+          (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+          (yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml"))))
+    :config
+    (defun my-treesit-install-all-grammars ()
+      "Install all tree-sitter grammars."
+      (interactive)
+      (dolist (lang (mapcar #'car treesit-language-source-alist))
+        (unless (treesit-language-available-p lang)
+          (message "Installing %s..." lang)
+          (treesit-install-language-grammar lang)))))
+
   (leaf cc-mode
     :tag "builtin"
     :custom
@@ -943,62 +977,8 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
     (leaf clj-deps-new
       :url "https://github.com/jpe90/emacs-clj-deps-new"))
 
-  (leaf dockerfile-mode
-    :url "https://github.com/spotify/dockerfile-mode")
-
   (leaf elisp-mode
-    :tag "builtin")
-
-  (leaf go-mode
-    :url "https://github.com/dominikh/go-mode.el"
-    :hook
-    ((before-save-hook . gofmt-before-save))
-    :custom
-    ((gofmt-command . "goimports")))
-
-  (leaf lua-mode
-    :url "https://github.com/immerrr/lua-mode")
-
-  (leaf mhtml-mode
-    :tag "builtin"
-    :mode "\\.svelte\\'")
-
-  (leaf nix-mode
-    :url "https://github.com/NixOS/nix-mode")
-
-  (leaf python-mode
-    :url "https://gitlab.com/python-mode-devs/python-mode/")
-
-  (leaf rustic
-    :url "https://github.com/emacs-rustic/rustic"
-    :custom
-    ((rustic-format-on-save . t)
-     (rustic-cargo-use-last-stored-auguments . t)
-     (rustic-lsp-client my-default-lsp-client))
-    :config
-    (leaf cargo
-      :url "https://github.com/kwrooijen/cargo.el"))
-
-  (leaf terraform-mode
-    :url "https://github.com/hcl-emacs/terraform-mode"
-    :custom
-    ((terraform-indent-level . 2)
-     (hcl-indent-level . 2)))
-
-  (leaf tex-mode
-    :tag "builtin")
-
-  (leaf tsx-ts-mode
-    :tag "builtin"
-    :mode "\\.tsx\\'")
-
-  (leaf typescript-ts-mode
-    :tag "builtin"
-    :mode "\\.ts\\'")
-
-  (leaf yaml-ts-mode
-    :tag "builtin"
-    :mode "\\.yaml\\'"))
+    :tag "builtin"))
 
 (leaf *ai-assistant
   :config
