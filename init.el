@@ -957,8 +957,77 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
       (dolist (lang (mapcar #'car treesit-language-source-alist))
         (unless (treesit-language-available-p lang)
           (message "Installing %s..." lang)
-          (treesit-install-language-grammar lang)))))
+          (treesit-install-language-grammar lang))))
 
+    (leaf bash-ts-mode
+      :tag "builtin"
+      :mode "\\.sh\\'" "\\.bash\\'")
+
+    (leaf css-ts-mode
+      :tag "builtin"
+      :mode "\\.css\\'")
+
+    (leaf dockerfile-ts-mode
+      :tag "builtin"
+      :mode "Dockerfile\\'")
+
+    (leaf go-ts-mode
+      :tag "builtin"
+      :mode "\\.go\\'" "go.mod\\'")
+
+    (leaf hcl-ts-mode
+      ;; hcl is not supported in Emacs built-in treesit yet
+      :if nil
+      :mode "\\.tf\\'" "\\.tfvars\\'")
+
+    (leaf html-ts-mode
+      :tag "builtin"
+      :mode "\\.html?\\'")
+
+    (leaf js-ts-mode
+      :tag "builtin"
+      :mode "\\.js\\'")
+
+    (leaf json-ts-mode
+      :tag "builtin"
+      :mode "\\.json\\'")
+
+    (leaf kotlin-ts-mode
+      :url "https://gitlab.com/bricka/emacs-kotlin-ts-mode/"
+      :mode "\\.kt\\'")
+
+    (leaf lua-ts-mode
+      :tag "builtin"
+      :mode "\\.lua\\'")
+
+    (leaf nix-ts-mode
+      :url "https://github.com/nix-community/nix-ts-mode"
+      :mode "\\.nix\\'")
+
+    (leaf python-ts-mode
+      :tag "builtin"
+      :mode "\\.py\\'")
+
+    (leaf rust-ts-mode
+      :tag "builtin"
+      :mode "\\.rs\\'")
+
+    (leaf swift-ts-mode
+      :url "https://github.com/rechsteiner/swift-ts-mode"
+      :mode "\\.swift\\'")
+
+    (leaf toml-ts-mode
+      :tag "builtin"
+      :mode "\\.toml\\'")
+
+    (leaf typescript-ts-mode
+      :tag "builtin"
+      :mode "\\.ts\\'")
+
+    (leaf yaml-ts-mode
+      :tag "builtin"
+      :mode "\\.ya?ml\\'"))
+  
   (leaf cc-mode
     :tag "builtin"
     :custom
