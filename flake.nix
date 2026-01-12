@@ -20,7 +20,7 @@
       in
       {
         homeManagerModules = {
-          default = { ... }:
+          pgtk = { ... }:
             {
               programs.emacs = {
                 enable = true;
@@ -35,7 +35,7 @@
                 ".ddskk/init".source = ./.ddskk/init;
               };
             };
-          purepkgs = { ... }:
+          stable = { ... }:
             {
               programs.emacs = {
                 enable = true;
