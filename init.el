@@ -394,11 +394,35 @@ _C-n_: down
     :url "https://github.com/manateelazycat/lsp-bridge"
     :init
     (global-lsp-bridge-mode)
+    (define-prefix-command 'lsp-bridge-prefix)
+    :custom
+    ((lsp-bridge-enable-completion-in-minibuffer . t)
+     (lsp-bridge-enable-hover-diagnostic . t)
+     (lsp-bridge-enable-org-babel . t))
+    :bind
+    (("M-l" . lsp-bridge-prefix)
+     (lsp-bridge-mode-map
+      ("M-l d" . lsp-bridge-find-def)
+      ("M-l r" . lsp-bridge-find-references)
+      ("M-l a" . lsp-bridge-code-action)
+      ("M-l R" . lsp-bridge-rename)
+      ("M-l f" . lsp-bridge-format-code)))
     :config
     (leaf acm
       :url "https://github.com/manateelazycat/lsp-bridge"
       :custom
-      ((acm-enable-capf . t)))
+      ((acm-enable-capf . t)
+       (acm-enable-copilot . t))
+      :bind
+      ((acm-mode-map
+        ("TAB" . nil)
+        ("C-j" . nil)
+        ("RET" . nil)
+        ("<tab>" . nil)
+        ("M-," . nil)
+        ("M-." . nil)
+        ("M-H" . nil)
+        ("M-h" . nil))))
     
     (leaf yasnipet
       :url "https://github.com/joaotavora/yasnippet"
@@ -935,8 +959,8 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
   :config
   (leaf copilot
     :url "https://github.com/copilot-emacs/copilot.el"
-    :hook
-    ((prog-mode-hook . copilot-mode))
+    :config
+    (copilot-mode . nil)
     :bind
     ((copilot-completion-map
       ("<tab>" . copilot-accept-completion-by-line)
