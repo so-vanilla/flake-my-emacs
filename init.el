@@ -390,91 +390,18 @@ _C-n_: down
 
 (leaf *completion
   :config
-  (if (file-exists-p "~/repos/github.com/jadestrong/lsp-proxy")
-      (progn
-        (add-to-list 'load-path "~/repos/github.com/jadestrong/lsp-proxy")
-        (leaf lsp-proxy
-          :url "https://github.com/jadestrong/lsp-proxy"
-          :ensure nil
-          :hook
-          ((c-mode-hook . lsp-proxy-mode)
-           (clojure-mode-hook . lsp-proxy-mode)
-           (css-ts-mode-hook . lsp-proxy-mode)
-           (dockerfile-ts-mode-hook . lsp-proxy-mode)
-           (go-ts-mode-hook . lsp-proxy-mode)
-           (lua-ts-mode-hook . lsp-proxy-mode)
-           (markdown-mode-hook . lsp-proxy-mode)
-           (html-ts-mode-hook . lsp-proxy-mode)
-           (java-ts-mode-hook . lsp-proxy-mode)
-           (js-ts-mode-hook . lsp-proxy-mode)
-           (nix-ts-mode-hook . lsp-proxy-mode)
-           (python-ts-mode-hook . lsp-proxy-mode)
-           (rust-ts-mode-hook . lsp-proxy-mode)
-           (yaml-ts-mode-hook . lsp-proxy-mode))
-          :config
-          (leaf yasnippet
-            :custom
-            ((yas-snippet-dirs . nil))))))
-
-  (leaf lsp-mode
-    :url "https://github.com/emacs-lsp/lsp-mode"
-    :if nil
-    :hook
-    ((c-mode-hook . lsp)
-     (clojure-mode-hook . lsp)
-     (css-mode-hook . lsp)
-     (dockerfile-mode . lsp)
-     (go-mode-hook . lsp)
-     (latex-mode-hook . lsp)
-     (lua-mode-hook . lsp)
-     (markdown-mode-hook . lsp)
-     (mhtml-mode-hook . lsp)
-     (java-mode-hook . lsp)
-     (js-mode-hook . lsp)
-     (nix-mode-hook . lsp)
-     (python-mode-hook . lsp)
-     (rust-mode-hook . lsp)
-     (terraform-mode-hook . lsp)
-     (yaml-ts-mode-hook . lsp)
-     (yaml-ts-mode-hook . lsp)
-     (lsp-mode . lsp-enable-which-key-integration)
-     (lsp-mode-hook . lsp-lens-mode))
-    :custom
-    ((lsp-keymap-prefix . "M-l")
-     (lsp-disabled-clients . '(tfls))
-     (lsp-terraform-ls-enable-show-reference . t)
-     (lsp-terraform-ls-prefill-required-fields . t))
+  (leaf lsp-bridge
+    :url "https://github.com/manateelazycat/lsp-bridge"
+    :global-minor-mode global-lsp-bridge-mode
     :config
-    (lsp-register-client
-     (make-lsp-client :new-connection (lsp-stdio-connection '("nixd"))
-                      :major-modes '(nix-mode)
-                      :priority 0
-                      :server-id 'nixd))
-    
-    (leaf lsp-pyright
-      :url "https://github.com/emacs-lsp/lsp-pyright"
-      :hook
-      ((python-mode-hook . (lambda ()
-                             (require 'lsp-pyright)
-                             (lsp)))))
-
-    (leaf lsp-java
-      :url "https://github.com/emacs-lsp/lsp-java"
-      :hook
-      ((java-mode-hook . (lambda ()
-                             (require 'lsp-java)
-                             (lsp))))
-      :config
-      (leaf lsp-java-boot
-        :url "https://github.com/emacs-lsp/lsp-java"
-        :hook
-        ((java-mode-hook . lsp-java-boot-lens-mode))))
-
-    (leaf lsp-ui
-      :url "https://github.com/emacs-lsp/lsp-ui"
-      :global-minor-mode lsp-ui-mode
+    (leaf acm
+      :url "https://github.com/manateelazycat/lsp-bridge"
       :custom
-      ((lsp-ui-sideline-show-hover . t)))))
+      ((acm-enable-capf . t)))
+    
+    (leaf yasnipet
+      :url "https://github.com/joaotavora/yasnippet"
+      :global-minor-mode yas-global-mode)))
 
 (leaf *inline-completion
   :config
