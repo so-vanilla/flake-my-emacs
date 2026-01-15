@@ -392,7 +392,8 @@ _C-n_: down
   :config
   (leaf lsp-bridge
     :url "https://github.com/manateelazycat/lsp-bridge"
-    :global-minor-mode global-lsp-bridge-mode
+    :init
+    (global-lsp-bridge-mode)
     :config
     (leaf acm
       :url "https://github.com/manateelazycat/lsp-bridge"
