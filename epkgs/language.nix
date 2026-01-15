@@ -6,6 +6,7 @@ with epkgs; [
   clojure-mode
   cider
   cargo
+  kotlin-ts-mode
   nix-ts-mode
   swift-ts-mode
 ]
