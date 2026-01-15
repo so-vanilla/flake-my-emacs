@@ -993,7 +993,7 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
 
     (leaf kotlin-ts-mode
       :url "https://gitlab.com/bricka/emacs-kotlin-ts-mode/"
-      :mode "\\.kt\\'")
+      :mode "\\.kt\\'" "\\.kts\\'")
 
     (leaf lua-ts-mode
       :tag "builtin"
