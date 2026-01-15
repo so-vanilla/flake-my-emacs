@@ -972,8 +972,7 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
   (leaf eat
     :url "https://codeberg.org/akib/emacs-eat"
     :hook
-    ((eshell-first-time-mode-hook . eat-eshell-visual-command-mode)
-     (eat-mode-hook . corfu-mode))
+    ((eshell-first-time-mode-hook . eat-eshell-visual-command-mode))
     :custom
     ((eat-enable-auto-line-mode . t))
     :init
