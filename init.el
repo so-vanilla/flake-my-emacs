@@ -417,6 +417,7 @@ _C-n_: down
       ((acm-mode-map
         ("TAB" . nil)
         ("C-j" . nil)
+        ("C-i" . acm-complete)
         ("RET" . nil)
         ("<tab>" . nil)
         ("M-," . nil)
