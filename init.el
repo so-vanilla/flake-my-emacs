@@ -405,51 +405,6 @@ _C-n_: down
 
 (leaf *inline-completion
   :config
-  (leaf corfu
-    :url "https://github.com/minad/corfu"
-    :global-minor-mode global-corfu-mode
-    :init
-    (eval-after-load 'corfu
-      '(setq corfu-mode-map nil))
-    :custom
-    ((corfu-auto . t)
-     (corfu-auto-delay . 0)
-     (corfu-auto-prefix . 1)
-     (corfu-popupinfo-delay . '(0.1 . 0.1)))
-    :bind
-    ((corfu-map
-      ("C-g" . corfu-quit)
-      ("C-i" . corfu-complete)
-      ("C-n" . corfu-next)
-      ("C-p" . corfu-previous)
-      ("<tab>" . nil)
-      ("RET" . nil)
-      ("<down>" . nil)
-      ("<up>" . nil)
-      ("C-M-i" . nil)
-      ("M-SPC" . nil)
-      ("M-g" . nil)
-      ("M-h" . nil)
-      ("M-n" . nil)
-      ("M-p" . nil)
-      ("[remap beginning-of-buffer]" . nil)
-      ("[remap completion-at-point]" . nil)
-      ("[remap end-of-buffer]" . nil)
-      ("[remap keyboard-escape-quit]" . nil)
-      ("[remap move-beginning-of-line]" . nil)
-      ("[remap move-end-of-line]" . nil)
-      ("[remap next-line]" . nil)
-      ("[remap previous-line]" . nil)
-      ("[remap scroll-down-command]" . nil)
-      ("[remap scroll-up-command]" . nil)))
-    :config
-    (corfu-history-mode)
-    (corfu-popupinfo-mode)
-    
-    (leaf corfu-terminal
-      :url "https://codeberg.org/akib/emacs-corfu-terminal"
-      :doc "Temporary solution. Corfu support for terminal Emacs31. After release, remove this."))
-
   (leaf cape
     :url "https://github.com/minad/cape"
     :config
