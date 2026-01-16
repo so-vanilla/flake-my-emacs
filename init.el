@@ -54,7 +54,8 @@
      (create-lockfiles . nil)
      (tab-width . 4)
      (gc-cons-threshold . 10000000)
-     (read-process-output-max . 1048576)))
+     (read-process-output-max . 1048576)
+     (enable-recursive-minibuffers . t)))
 
   (leaf startup
     :tag "builtin"
