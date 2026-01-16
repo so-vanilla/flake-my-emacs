@@ -1069,15 +1069,15 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
     :url "https://github.com/radian-software/apheleia"
     :global-minor-mode apheleia-global-mode
     :config
-    (setf (alist-get 'black apheleia-mode-alist)
+    (setf (alist-get 'black apheleia-formatters)
           '("black"))
     (setf (alist-get 'python-ts-mode apheleia-mode-alist) 'black)
 
-    (setf (alist-get 'nixfmt apheleia-mode-alist)
+    (setf (alist-get 'nixfmt apheleia-formatters)
           '("nixfmt"))
     (setf (alist-get 'nix-ts-mode apheleia-mode-alist) 'nixfmt)
 
-    (setf (alist-get 'rustfmt apheleia-mode-alist)
+    (setf (alist-get 'rustfmt apheleia-formatters)
           '("rustfmt"))
     (setf (alist-get 'rust-ts-mode apheleia-mode-alist) 'rustfmt)))
 
