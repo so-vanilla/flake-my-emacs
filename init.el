@@ -1061,7 +1061,23 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
      (skk-init-file . "~/.ddskk/init")
      (skk-large-jisyo . "~/.ddskk/SKK-JISYO.L"))
     :bind
-    (("C-x C-j" . skk-mode))))
+    (("C-x C-j" . skk-mode)))
+
+  (leaf apheleia
+    :url "https://github.com/radian-software/apheleia"
+    :global-minor-mode apheleia-global-mode
+    :config
+    (setf (alist-get 'black apheleia-mode-alist)
+          '("black"))
+    (setf (alist-get 'python-ts-mode apheleia-mode-alist) 'black)
+
+    (setf (alist-get 'nixfmt apheleia-mode-alist)
+          '("nixfmt"))
+    (setf (alist-get 'nix-ts-mode apheleia-mode-alist) 'nixfmt)
+
+    (setf (alist-get 'rustfmt apheleia-mode-alist)
+          '("rustfmt"))
+    (setf (alist-get 'rust-ts-mode apheleia-mode-alist) 'rustfmt)))
 
 (leaf *appearance
   :config

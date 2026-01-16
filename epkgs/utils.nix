@@ -10,4 +10,5 @@ with epkgs; [
   mistty
   eat
   jinx
+  apheleia
 ]
