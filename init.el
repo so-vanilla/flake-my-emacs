@@ -397,6 +397,7 @@ _C-n_: down
     (define-prefix-command 'lsp-bridge-prefix)
     :custom
     ((lsp-bridge-enable-completion-in-minibuffer . t)
+     (lsp-bridge-enable-completion-in-string . t)
      (lsp-bridge-enable-hover-diagnostic . t)
      (lsp-bridge-enable-org-babel . t))
     :bind
