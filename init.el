@@ -931,7 +931,7 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
 
     (leaf typescript-ts-mode
       :tag "builtin"
-      :mode "\\.ts\\'")
+      :mode "\\.ts\\'" "\\.tsx\\'")
 
     (leaf yaml-ts-mode
       :tag "builtin"
