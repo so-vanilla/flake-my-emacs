@@ -856,6 +856,7 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
           (rust "https://github.com/tree-sitter/tree-sitter-rust")
           (swift "https://github.com/tree-sitter/tree-sitter-swift")
           (toml "https://github.com/tree-sitter/tree-sitter-toml")
+          (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
           (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
           (yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml")))
      (treesit-font-lock-level . 4))
@@ -879,10 +880,6 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
     (leaf dockerfile-ts-mode
       :tag "builtin"
       :mode "Dockerfile\\'")
-
-    (leaf go-ts-mode
-      :tag "builtin"
-      :mode "\\.go\\'" "go.mod\\'")
 
     (leaf hcl-ts-mode
       ;; hcl is not supported in Emacs built-in treesit yet
@@ -957,7 +954,11 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
       :url "https://github.com/jpe90/emacs-clj-deps-new"))
 
   (leaf elisp-mode
-    :tag "builtin"))
+    :tag "builtin")
+
+  (leaf go-mode
+    :url "https://github.com/dominikh/go-mode.el"
+    :mode "\\.go\\'"))
 
 (leaf *ai-assistant
   :config
