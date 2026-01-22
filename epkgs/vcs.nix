@@ -1,6 +1,8 @@
 {
-  epkgs
+  epkgs,
 }:
-with epkgs; [
+with epkgs;
+[
   magit
+  forge
 ]
