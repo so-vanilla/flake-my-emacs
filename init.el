@@ -546,7 +546,8 @@ _r_: row(table)
                               `((:name "Overdue"
                                        :deadline past)
                                 (:name "Today"
-                                       :deadline 'today)
+                                       :deadline 'today
+                                       :time-grid)
                                 (:name "Due Soon"
                                        :and (:deadline (before ,(org-read-date nil nil "+1w"))
                                                        :deadline (after ,(org-read-date nil nil ""))))
