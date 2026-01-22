@@ -543,19 +543,23 @@ _r_: row(table)
     :global-minor-mode t
     :custom
     ((org-super-agenda-groups .
-                              '((:name "Schedule"
-                                       :file-path "~/org/schedule.org"
-                                       :time-grid t)
-                                (:name "Work"
-                                       :tag "work")
-                                (:name "Project"
-                                       :tag "project")
-                                (:name "Search"
-                                       :file-path "~/org/todo.org")
+                              `((:name "Overdue"
+                                       :deadline past)
+                                (:name "Today"
+                                       :deadline 'today)
+                                (:name "Due Soon"
+                                       :and (:deadline (before ,(org-read-date nil nil "+1w"))
+                                                       :deadline (after ,(org-read-date nil nil ""))))
+                                (:name "Daily"
+                                       :tag "daily")
+                                (:name "Weekly"
+                                       :tag "weekly")
+                                (:name "Monthly"
+                                       :tag "monthly")
                                 (:name "Emacs"
                                        :tag "emacs")
-                                (:name "Linux"
-                                       :tag "linux")))))
+                                (:name "NixOS"
+                                       :tag "nios")))))
 
   (leaf org-capture
     :tag "builtin"
