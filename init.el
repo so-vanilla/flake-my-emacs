@@ -542,25 +542,37 @@ _r_: row(table)
     :url "https://github.com/alphapapa/org-super-agenda"
     :global-minor-mode t
     :custom
-    ((org-super-agenda-groups .
-                              `((:name "Overdue"
-                                       :deadline past)
-                                (:name "Today"
-                                       :deadline 'today
-                                       :time-grid)
-                                (:name "Due Soon"
-                                       :and (:deadline (before ,(org-read-date nil nil "+1w"))
-                                                       :deadline (after ,(org-read-date nil nil ""))))
-                                (:name "Daily"
-                                       :tag "daily")
-                                (:name "Weekly"
-                                       :tag "weekly")
-                                (:name "Monthly"
-                                       :tag "monthly")
-                                (:name "Emacs"
-                                       :tag "emacs")
-                                (:name "NixOS"
-                                       :tag "nios")))))
+    ((org-agenda-custom-commands .
+                                 `(("g" "General"
+                                    ((agenda ""
+                                             ((org-agenda-files '("~/org/todo.org" "~/org/schedule.org"))
+                                              (org-agenda-span 'day)
+                                              (org-super-agenda-groups `((:name "schedule"
+                                                                                :time-grid t
+                                                                                :date today
+                                                                                :deadline today)
+                                                                         (:discard (:anything t))))))
+                                     (alltodo ""
+                                              ((org-agenda-span 'day)
+                                               (org-agenda-files '("~/org/todo.org"))
+                                               (org-agenda-entry-types '(deadline scheduled timestamp))
+                                               (org-super-agenda-groups `((:name "Overdue"
+                                                                                 :deadline past)
+                                                                          (:name "Today"
+                                                                                 :deadline today)
+                                                                          (:name "Due Soon"
+                                                                                 :and (:deadline (before ,(org-read-date nil nil "+1w"))
+                                                                                                 :deadline (after ,(org-read-date nil nil ""))))
+                                                                          (:name "Daily"
+                                                                                 :tag "daily")
+                                                                          (:name "Weekly"
+                                                                                 :tag "weekly")
+                                                                          (:name "Monthly"
+                                                                                 :tag "monthly")
+                                                                          (:name "Emacs"
+                                                                                 :tag "emacs")
+                                                                          (:name "NixOS"
+                                                                                 :tag "nixos")))))))))))
 
   (leaf org-capture
     :tag "builtin"
