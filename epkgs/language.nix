@@ -10,5 +10,5 @@ with epkgs;
   go-mode
   kotlin-ts-mode
   nix-ts-mode
-  swift-ts-mode
+  # swift-ts-mode
 ]
