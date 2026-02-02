@@ -1099,7 +1099,12 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
     (setf (alist-get 'nix-ts-mode apheleia-mode-alist) 'nixfmt)
     ;; rust
     (setf (alist-get 'rustfmt apheleia-formatters) '("rustfmt"))
-    (setf (alist-get 'rust-ts-mode apheleia-mode-alist) 'rustfmt)))
+    (setf (alist-get 'rust-ts-mode apheleia-mode-alist) 'rustfmt))
+
+  (leaf exec-path-from-shell
+    :init
+    (when (memq window-system '(mac ns x))
+      (exec-path-from-shell-initialize))))
 
 (leaf *appearance
   :config

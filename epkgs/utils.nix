@@ -11,4 +11,5 @@ with epkgs; [
   eat
   jinx
   apheleia
+  exec-path-from-shell
 ]
