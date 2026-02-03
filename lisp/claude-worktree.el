@@ -25,6 +25,12 @@
     (when git-dir
       (file-name-directory (directory-file-name git-dir)))))
 
+(defun claude-worktree--get-project-name ()
+  "Get the current project's root directory name."
+  (let ((repo-root (claude-worktree--get-repo-root)))
+    (when repo-root
+      (file-name-nondirectory (directory-file-name repo-root)))))
+
 (defun claude-worktree--get-worktree-parent-dir ()
   "Get the parent directory where worktrees should be created."
   (let ((repo-root (claude-worktree--get-repo-root)))
@@ -59,9 +65,11 @@ Prompts for a new branch name with current branch as prefix."
   (interactive)
   (let* ((current-branch (claude-worktree--current-branch))
          (new-branch (read-string "New branch name: "
-                                  (concat current-branch "/")))
+                                  (concat current-branch "-")))
          (parent-dir (claude-worktree--get-worktree-parent-dir))
-         (dir-name (claude-worktree--sanitize-branch-name new-branch))
+         (project-name (claude-worktree--get-project-name))
+         (sanitized-branch (claude-worktree--sanitize-branch-name new-branch))
+         (dir-name (format "%s_%s" project-name sanitized-branch))
          (worktree-path (expand-file-name dir-name parent-dir)))
     (when (file-exists-p worktree-path)
       (user-error "Directory already exists: %s" worktree-path))
@@ -111,7 +119,7 @@ Prompts for a new branch name with current branch as prefix."
          (index (cl-position selected choices :test #'string=))
          (worktree-path (car (nth (1+ index) worktrees)))
          (persp-name (file-name-nondirectory (directory-file-name worktree-path))))
-    (when (persp-with-name persp-name)
+    (when (member persp-name (persp-names))
       (persp-switch persp-name)
       (claude-worktree--stop-claude-code)
       (persp-kill persp-name))
@@ -128,8 +136,8 @@ _k_: prev       _A_: attach
 _b_: switch     _d_: detach
                 _D_: delete
 "
-  ("j" persp-next-buffer)
-  ("k" persp-prev-buffer)
+  ("j" persp-next)
+  ("k" persp-prev)
   ("b" persp-switch-to-buffer)
   ("a" claude-worktree-add :exit t)
   ("A" claude-worktree-attach :exit t)
