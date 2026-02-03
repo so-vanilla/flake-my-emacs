@@ -979,6 +979,20 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
 
 (leaf *ai-assistant
   :config
+  (leaf perspective
+    :url "https://github.com/nex3/perspective-el"
+    :global-minor-mode persp-mode
+    :custom
+    ((persp-mode-prefix-key . (kbd "C-x x"))))
+
+  (leaf claude-worktree
+    :ensure nil
+    :after (perspective magit claude-code-ide)
+    :load-path "~/.emacs.d/lisp"
+    :bind
+    (("M-j" . persp-next-buffer)
+     ("M-k" . persp-prev-buffer)))
+
   (leaf copilot
     :url "https://github.com/copilot-emacs/copilot.el"
     :config

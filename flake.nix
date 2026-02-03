@@ -32,6 +32,7 @@
                 ".emacs.d/init.el".source = ./init.el;
                 ".emacs.d/early-init.el".source = ./early-init.el;
                 ".emacs.d/templates".source = ./templates;
+                ".emacs.d/lisp".source = ./lisp;
                 ".ddskk/init".source = ./.ddskk/init;
               };
             };
@@ -47,6 +48,7 @@
                 ".emacs.d/init.el".source = ./init.el;
                 ".emacs.d/early-init.el".source = ./early-init.el;
                 ".emacs.d/templates".source = ./templates;
+                ".emacs.d/lisp".source = ./lisp;
                 ".ddskk/init".source = ./.ddskk/init;
               };
             };
@@ -62,6 +64,7 @@
                 ".emacs.d/init.el".source = ./init.el;
                 ".emacs.d/early-init.el".source = ./early-init.el;
                 ".emacs.d/templates".source = ./templates;
+                ".emacs.d/lisp".source = ./lisp;
                 ".ddskk/init".source = ./.ddskk/init;
               };
             };
