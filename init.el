@@ -1069,7 +1069,8 @@ _r_: rename              _j_: next           _f_: focus
     (customize-set-variable
      'eat-semi-char-non-bound-keys
      (append
-      (list (vector meta-prefix-char ?e) (vector meta-prefix-char ?o))
+      (list (vector meta-prefix-char ?e) (vector meta-prefix-char ?o)
+            (vector meta-prefix-char ?j) (vector meta-prefix-char ?k))
       eat-semi-char-non-bound-keys))
     :bind
     (eat-mode-map
