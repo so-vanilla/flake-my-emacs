@@ -1003,14 +1003,13 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
 
 (leaf *others
   :config
+  (leaf persp-side-bar
+    :load-path "~/.emacs.d/lisp")
+
   (leaf perspective
     :url "https://github.com/nex3/perspective-el"
     :init
     (persp-mode)
-
-    ;; Load custom sidebar package
-    :config
-    (load "persp-side-bar")
 
     :bind
     (("M-m" . hydra-perspective-side-bar/body)
