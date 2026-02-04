@@ -1065,16 +1065,24 @@ _r_: rename              _j_: next           _f_: focus
       (if eat--semi-char-mode
           (eat-emacs-mode)
         (eat-semi-char-mode)))
+    (defun eat-refresh ()
+      "Refresh eat terminal by resizing window width +1 then -1."
+      (interactive)
+      (let ((window (selected-window)))
+        (window-resize window 1 t)
+        (window-resize window -1 t)))
     :config
     (customize-set-variable
      'eat-semi-char-non-bound-keys
      (append
       (list (vector meta-prefix-char ?e) (vector meta-prefix-char ?o)
-            (vector meta-prefix-char ?j) (vector meta-prefix-char ?k))
+            (vector meta-prefix-char ?j) (vector meta-prefix-char ?k)
+            (vector meta-prefix-char ?r))
       eat-semi-char-non-bound-keys))
     :bind
     (eat-mode-map
-     ("M-e" . eat-toggle-mode)))
+     ("M-e" . eat-toggle-mode)
+     ("M-r" . eat-refresh)))
   
   (leaf jinx
     :url "https://github.com/minad/jinx"
