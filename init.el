@@ -1003,6 +1003,44 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
 
 (leaf *others
   :config
+  (leaf perspective
+    :url "https://github.com/nex3/perspective-el"
+    :init
+    (persp-mode)
+
+    ;; Load custom sidebar package
+    :config
+    (load "persp-side-bar")
+
+    :bind
+    (("M-m" . hydra-perspective-side-bar/body)
+     ("M-j" . persp-next)
+     ("M-k" . persp-prev))
+
+    :hydra
+    ((hydra-perspective-side-bar
+      (:hint nil)
+      "
+^Perspective^            ^Navigate^          ^Sidebar^
+^^-----------------------------------------------------------
+_c_: create              _n_: next           _s_: show
+_k_: kill                _p_: previous       _t_: toggle
+_r_: rename              _j_: next           _f_: focus
+^ ^                      _k_: previous       _q_: quit
+"
+      ("c" persp-new)
+      ("k" persp-kill)
+      ("r" persp-rename)
+      ("n" persp-next)
+      ("p" persp-prev)
+      ("j" persp-next)
+      ("k" persp-prev)
+      ("s" persp-side-bar-show :exit t)
+      ("t" persp-side-bar-toggle :exit t)
+      ("f" persp-side-bar-focus :exit t)
+      ("q" nil :exit t)
+      ("C-m" nil :exit t))))
+
   (leaf projectile
     :global-minor-mode t
     :bind

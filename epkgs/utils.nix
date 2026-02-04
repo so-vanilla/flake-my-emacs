@@ -3,6 +3,7 @@
 }:
 with epkgs; [
   projectile
+  perspective
   ddskk
   direnv
   dirvish
