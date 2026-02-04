@@ -33,6 +33,7 @@
                 ".emacs.d/early-init.el".source = ./early-init.el;
                 ".emacs.d/templates".source = ./templates;
                 ".ddskk/init".source = ./.ddskk/init;
+                ".emacs.d/lisp".source = ./.emacs.d/lisp;
               };
             };
           stable = { ... }:
@@ -48,6 +49,7 @@
                 ".emacs.d/early-init.el".source = ./early-init.el;
                 ".emacs.d/templates".source = ./templates;
                 ".ddskk/init".source = ./.ddskk/init;
+                ".emacs.d/lisp".source = ./.emacs.d/lisp;
               };
             };
           macport = { ... }:
@@ -63,6 +65,7 @@
                 ".emacs.d/early-init.el".source = ./early-init.el;
                 ".emacs.d/templates".source = ./templates;
                 ".ddskk/init".source = ./.ddskk/init;
+                ".emacs.d/lisp".source = ./.emacs.d/lisp;
               };
             };
         };

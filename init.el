@@ -1007,141 +1007,37 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
     :url "https://github.com/nex3/perspective-el"
     :init
     (persp-mode)
-    :preface
-    ;; セッション変数とカスタム関数の定義
-    (defvar my-perspective-bookmarks '()
-      "List of perspective names bookmarked for current session.")
 
-    ;; ブックマーク追加関数群
-    (defun my-perspective-bookmark-add-current ()
-      "Add current perspective to bookmarks."
-      (interactive)
-      (let ((current-persp (persp-current-name)))
-        (when current-persp
-          (unless (member current-persp my-perspective-bookmarks)
-            (push current-persp my-perspective-bookmarks)
-            (message "Added perspective '%s' to bookmarks" current-persp)))))
-
-    (defun my-perspective-bookmark-add-select ()
-      "Select and add a perspective to bookmarks."
-      (interactive)
-      (let ((persp-name (completing-read "Select perspective to bookmark: "
-                                         (persp-names))))
-        (when persp-name
-          (unless (member persp-name my-perspective-bookmarks)
-            (push persp-name my-perspective-bookmarks)
-            (message "Added perspective '%s' to bookmarks" persp-name)))))
-
-    (defun my-perspective-bookmark-delete ()
-      "Delete a perspective from bookmarks."
-      (interactive)
-      (if my-perspective-bookmarks
-          (let ((persp-name (completing-read "Remove perspective from bookmarks: "
-                                             my-perspective-bookmarks)))
-            (when persp-name
-              (setq my-perspective-bookmarks (remove persp-name my-perspective-bookmarks))
-              (message "Removed perspective '%s' from bookmarks" persp-name)))
-        (message "No bookmarked perspectives")))
-
-    ;; サイドバー表示関数
-    (defun my-perspective-bookmarks-show ()
-      "Show perspective bookmarks in sidebar."
-      (interactive)
-      (let ((buffer (get-buffer-create "*Perspective Bookmarks*")))
-        (with-current-buffer buffer
-          (let ((inhibit-read-only t))
-            (erase-buffer)
-            (insert "Perspective Bookmarks\n")
-            (insert "=====================\n\n")
-            (if my-perspective-bookmarks
-                (dolist (persp my-perspective-bookmarks)
-                  (insert-button persp
-                                 'action (lambda (button)
-                                           (persp-switch (button-label button)))
-                                 'follow-link t)
-                  (insert "\n"))
-              (insert "No bookmarked perspectives\n"))
-            (goto-char (point-min))
-            (setq buffer-read-only t))
-          ;; サイドバー用キーバインド
-          (define-key (current-local-map) "n" 'my-perspective-bookmark-next)
-          (define-key (current-local-map) "j" 'my-perspective-bookmark-next)
-          (define-key (current-local-map) "p" 'my-perspective-bookmark-previous)
-          (define-key (current-local-map) "k" 'my-perspective-bookmark-previous)
-          (define-key (current-local-map) (kbd "RET") 'my-perspective-bookmarks-select-current)
-          (define-key (current-local-map) (kbd "SPC") 'my-perspective-bookmarks-select-current)
-          (define-key (current-local-map) "d" 'my-perspective-bookmarks-delete-current))
-        (display-buffer buffer '((display-buffer-in-side-window)
-                                 (side . left)
-                                 (slot . 0)
-                                 (window-width . 30)))))
-
-    ;; サイドバー内での操作用関数
-    (defun my-perspective-bookmarks-select-current ()
-      "Select perspective at current line in bookmarks buffer."
-      (interactive)
-      (when (eq major-mode 'fundamental-mode)
-        (let ((persp-name (thing-at-point 'symbol)))
-          (when (and persp-name (member persp-name my-perspective-bookmarks))
-            (persp-switch persp-name)))))
-
-    (defun my-perspective-bookmarks-delete-current ()
-      "Delete perspective at current line from bookmarks."
-      (interactive)
-      (when (eq major-mode 'fundamental-mode)
-        (let ((persp-name (thing-at-point 'symbol)))
-          (when (and persp-name (member persp-name my-perspective-bookmarks))
-            (setq my-perspective-bookmarks (remove persp-name my-perspective-bookmarks))
-            (my-perspective-bookmarks-show)  ; refresh
-            (message "Removed perspective '%s' from bookmarks" persp-name)))))
-
-    ;; 循環ナビゲーション関数
-    (defun my-perspective-bookmark-next ()
-      "Switch to next bookmarked perspective."
-      (interactive)
-      (when my-perspective-bookmarks
-        (let* ((current-persp (persp-current-name))
-               (current-idx (or (cl-position current-persp my-perspective-bookmarks :test 'equal) -1))
-               (next-idx (mod (1+ current-idx) (length my-perspective-bookmarks)))
-               (next-persp (nth next-idx my-perspective-bookmarks)))
-          (persp-switch next-persp)
-          (message "Switched to perspective: %s" next-persp))))
-
-    (defun my-perspective-bookmark-previous ()
-      "Switch to previous bookmarked perspective."
-      (interactive)
-      (when my-perspective-bookmarks
-        (let* ((current-persp (persp-current-name))
-               (current-idx (or (cl-position current-persp my-perspective-bookmarks :test 'equal) 0))
-               (prev-idx (mod (1- current-idx) (length my-perspective-bookmarks)))
-               (prev-persp (nth prev-idx my-perspective-bookmarks)))
-          (persp-switch prev-persp)
-          (message "Switched to perspective: %s" prev-persp))))
+    ;; Load custom sidebar package
+    :config
+    (load "persp-side-bar")
 
     :bind
-    (("C-x p" . hydra-perspective-bookmarks/body)
-     ("M-j" . my-perspective-bookmark-next)
-     ("M-k" . my-perspective-bookmark-previous))
+    (("M-m" . hydra-perspective-side-bar/body)
+     ("M-j" . persp-next)
+     ("M-k" . persp-prev))
 
     :hydra
-    ((hydra-perspective-bookmarks
+    ((hydra-perspective-side-bar
       (:hint nil)
       "
-^Bookmark^               ^Navigate^          ^Show^
-^^---------------------------------------------------------
-_a_: add current         _n_: next           _s_: show sidebar
-_A_: add select          _p_: previous       _q_: quit
-_d_: delete              _j_: next
-^ ^                      _k_: previous
+^Perspective^            ^Navigate^          ^Sidebar^
+^^-----------------------------------------------------------
+_c_: create              _n_: next           _s_: show
+_k_: kill                _p_: previous       _t_: toggle
+_r_: rename              _j_: next           _f_: focus
+^ ^                      _k_: previous       _q_: quit
 "
-      ("a" my-perspective-bookmark-add-current :exit t)
-      ("A" my-perspective-bookmark-add-select :exit t)
-      ("d" my-perspective-bookmark-delete :exit t)
-      ("n" my-perspective-bookmark-next)
-      ("p" my-perspective-bookmark-previous)
-      ("j" my-perspective-bookmark-next)
-      ("k" my-perspective-bookmark-previous)
-      ("s" my-perspective-bookmarks-show :exit t)
+      ("c" persp-new)
+      ("k" persp-kill)
+      ("r" persp-rename)
+      ("n" persp-next)
+      ("p" persp-prev)
+      ("j" persp-next)
+      ("k" persp-prev)
+      ("s" persp-side-bar-show :exit t)
+      ("t" persp-side-bar-toggle :exit t)
+      ("f" persp-side-bar-focus :exit t)
       ("q" nil :exit t)
       ("C-m" nil :exit t))))
 
