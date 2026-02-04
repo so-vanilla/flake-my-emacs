@@ -1065,25 +1065,88 @@ _r_: rename              _j_: next           _f_: focus
       (if eat--semi-char-mode
           (eat-emacs-mode)
         (eat-semi-char-mode)))
+
     (defun eat-refresh ()
       "Refresh eat terminal by resizing window width +1 then -1."
       (interactive)
       (let ((window (selected-window)))
         (window-resize window 1 t)
         (window-resize window -1 t)))
+
+    ;; eat-org-input: org-mode buffer for composing text to send to eat terminal
+    (defvar-local eat-org-input--source-buffer nil
+      "The eat buffer to send text to.")
+    (defvar-local eat-org-input--source-terminal nil
+      "The eat terminal object.")
+    (defvar-local eat-org-input--saved-window-config nil
+      "Saved window configuration to restore after closing.")
+
+    (defvar eat-org-input-mode-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map (kbd "C-c '") #'eat-org-input-approve)
+        (define-key map (kbd "C-c C-'") #'eat-org-input-approve)
+        (define-key map (kbd "C-c C-k") #'eat-org-input-abort)
+        map)
+      "Keymap for `eat-org-input-mode'.")
+
+    (define-minor-mode eat-org-input-mode
+      "Minor mode for eat org input buffer."
+      :lighter " EatInput"
+      :keymap eat-org-input-mode-map)
+
+    (defun eat-org-input-open ()
+      "Open an org-mode buffer for composing text to send to eat terminal."
+      (interactive)
+      (unless (derived-mode-p 'eat-mode)
+        (user-error "Not in an eat buffer"))
+      (let ((source-buf (current-buffer))
+            (terminal eat-terminal)
+            (win-config (current-window-configuration))
+            (edit-buf (generate-new-buffer "*eat-org-input*")))
+        (pop-to-buffer edit-buf)
+        (org-mode)
+        (eat-org-input-mode 1)
+        (setq-local eat-org-input--source-buffer source-buf)
+        (setq-local eat-org-input--source-terminal terminal)
+        (setq-local eat-org-input--saved-window-config win-config)
+        (message "Edit, then C-c ' to send or C-c C-k to abort")))
+
+    (defun eat-org-input-approve ()
+      "Send the buffer content to eat terminal and close."
+      (interactive)
+      (let ((content (buffer-string))
+            (terminal eat-org-input--source-terminal)
+            (win-config eat-org-input--saved-window-config))
+        (kill-buffer)
+        (when win-config
+          (set-window-configuration win-config))
+        (when (and terminal (not (string-empty-p content)))
+          (eat-term-send-string-as-yank terminal content))))
+
+    (defun eat-org-input-abort ()
+      "Abort editing and close without sending."
+      (interactive)
+      (let ((win-config eat-org-input--saved-window-config))
+        (kill-buffer)
+        (when win-config
+          (set-window-configuration win-config))
+        (message "Aborted")))
+
     :config
     (customize-set-variable
      'eat-semi-char-non-bound-keys
      (append
       (list (vector meta-prefix-char ?e) (vector meta-prefix-char ?o)
             (vector meta-prefix-char ?j) (vector meta-prefix-char ?k)
-            (vector meta-prefix-char ?r))
+            (vector meta-prefix-char ?r) (vector meta-prefix-char ?i))
       eat-semi-char-non-bound-keys))
     :bind
     (eat-mode-map
      ("M-e" . eat-toggle-mode)
-     ("M-r" . eat-refresh)))
+     ("M-r" . eat-refresh)
+     ("M-i" . eat-org-input-open)))
   
+
   (leaf jinx
     :url "https://github.com/minad/jinx"
     :global-minor-mode global-jinx-mode
