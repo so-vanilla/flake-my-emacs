@@ -138,16 +138,16 @@
   (let ((original-window (selected-window)))
     ;; perspective切り替えが完了するまで少し待機
     (run-with-idle-timer 0.01 nil
-      (lambda ()
-        (if persp-side-bar-auto-show-on-new
-            (progn
-              ;; サイドバー表示（内部でレンダリングも実行される）
-              (persp-side-bar-show)
-              ;; 元のウィンドウにフォーカスを戻す
-              (when (window-live-p original-window)
-                (select-window original-window)))
-          ;; 自動表示が無効の場合はリフレッシュのみ
-          (persp-side-bar-refresh))))))
+                         (lambda ()
+                           (if persp-side-bar-auto-show-on-new
+                               (progn
+                                 ;; サイドバー表示（内部でレンダリングも実行される）
+                                 (persp-side-bar-show)
+                                 ;; 元のウィンドウにフォーカスを戻す
+                                 (when (window-live-p original-window)
+                                   (select-window original-window)))
+                             ;; 自動表示が無効の場合はリフレッシュのみ
+                             (persp-side-bar-refresh))))))
 
 ;; Auto-refresh when perspective changes
 (advice-add 'persp-switch :after
