@@ -1004,7 +1004,8 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
 (leaf *others
   :config
   (leaf persp-side-bar
-    :load-path "~/.emacs.d/lisp")
+    :load-path "~/.emacs.d/lisp"
+    :require t)
 
   (leaf perspective
     :url "https://github.com/nex3/perspective-el"
