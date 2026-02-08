@@ -55,7 +55,8 @@
      (tab-width . 4)
      (gc-cons-threshold . 10000000)
      (read-process-output-max . 1048576)
-     (enable-recursive-minibuffers . t)))
+     (enable-recursive-minibuffers . t)
+     (system-time-locale . "C")))
 
   (leaf startup
     :tag "builtin"
