@@ -565,6 +565,8 @@ _r_: row(table)
                                                                                                  :deadline (after ,(org-read-date nil nil ""))))
                                                                           (:name "Daily"
                                                                                  :tag "daily")
+                                                                          (:name "Mind"
+                                                                                 :tag "mind")
                                                                           (:name "Weekly"
                                                                                  :tag "weekly")
                                                                           (:name "Monthly"
