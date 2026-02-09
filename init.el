@@ -557,7 +557,9 @@ _r_: row(table)
                                               ((org-agenda-span 'day)
                                                (org-agenda-files '("~/org/todo.org"))
                                                (org-agenda-entry-types '(deadline scheduled timestamp))
-                                               (org-super-agenda-groups `((:name "Overdue"
+                                               (org-super-agenda-groups `((:name "Mind"
+                                                                                 :tag "mind")
+                                                                          (:name "Overdue"
                                                                                  :deadline past)
                                                                           (:name "Today"
                                                                                  :deadline today)
@@ -566,8 +568,6 @@ _r_: row(table)
                                                                                                  :deadline (after ,(org-read-date nil nil ""))))
                                                                           (:name "Daily"
                                                                                  :tag "daily")
-                                                                          (:name "Mind"
-                                                                                 :tag "mind")
                                                                           (:name "Weekly"
                                                                                  :tag "weekly")
                                                                           (:name "Monthly"
@@ -1031,13 +1031,13 @@ _k_: kill                _p_: previous       _t_: toggle
 _r_: rename              _j_: next           _f_: focus
 ^ ^                      _k_: previous       _q_: quit
 "
-      ("c" persp-new)
+      ("c" persp-switch)
       ("k" persp-kill)
       ("r" persp-rename)
       ("n" persp-next)
       ("p" persp-prev)
       ("j" persp-next)
-      ("k" persp-prev)
+      ("p" persp-prev)
       ("s" persp-side-bar-show :exit t)
       ("t" persp-side-bar-toggle :exit t)
       ("f" persp-side-bar-focus :exit t)
