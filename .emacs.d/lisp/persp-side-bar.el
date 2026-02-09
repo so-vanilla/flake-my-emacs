@@ -150,12 +150,12 @@
   "Handle new perspective creation - show sidebar if enabled."
   ;; perspective切り替えが完了するまで少し待機
   (run-with-idle-timer 0.01 nil
-    (lambda ()
-      (if persp-side-bar-auto-show-on-new
-          ;; サイドバー表示（フォーカスは移さない）
-          (persp-side-bar-display)
-        ;; 自動表示が無効の場合はリフレッシュのみ
-        (persp-side-bar-refresh)))))
+                       (lambda ()
+                         (if persp-side-bar-auto-show-on-new
+                             ;; サイドバー表示（フォーカスは移さない）
+                             (persp-side-bar-display)
+                           ;; 自動表示が無効の場合はリフレッシュのみ
+                           (persp-side-bar-refresh)))))
 
 ;; Auto-refresh when perspective changes
 (advice-add 'persp-switch :after
