@@ -1081,8 +1081,8 @@ _r_: rename              _j_: next           _f_: focus
       "Refresh eat terminal by resizing window width +1 then -1."
       (interactive)
       (let ((window (selected-window)))
-        (window-resize window 1 t)
-        (window-resize window -1 t)))
+        (window-resize window 10 t)
+        (window-resize window -10 t)))
 
     :config
     (customize-set-variable
@@ -1098,7 +1098,6 @@ _r_: rename              _j_: next           _f_: focus
      ("M-r" . eat-refresh)
      ("M-i" . eat-special-edit-open)))
   
-
   (leaf jinx
     :url "https://github.com/minad/jinx"
     :global-minor-mode global-jinx-mode
