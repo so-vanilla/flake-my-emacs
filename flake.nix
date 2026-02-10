@@ -15,59 +15,43 @@
       let
         pkgs = import inputs.nixpkgs {
           inherit system;
+          config.allowUnfree = true;
           overlays = [(import inputs.emacs-overlay)];
+        };
+
+        epkgsFn = import ./epkgs { inherit pkgs; };
+
+        mkEmacs = baseEmacs:
+          (pkgs.emacsPackagesFor baseEmacs).emacsWithPackages epkgsFn;
+
+        configFiles = {
+          ".emacs.d/init.el".source = ./init.el;
+          ".emacs.d/early-init.el".source = ./early-init.el;
+          ".emacs.d/templates".source = ./templates;
+          ".ddskk/init".source = ./.ddskk/init;
+          ".emacs.d/lisp".source = ./.emacs.d/lisp;
+        };
+
+        mkHmModule = baseEmacs: { ... }: {
+          programs.emacs = {
+            enable = true;
+            package = baseEmacs;
+            extraPackages = epkgsFn;
+          };
+          home.file = configFiles;
         };
       in
       {
+        packages = {
+          emacs-pgtk = mkEmacs pkgs.emacs-unstable-pgtk;
+          emacs-stable = mkEmacs pkgs.emacs;
+          default = mkEmacs pkgs.emacs;
+        };
+
         homeManagerModules = {
-          pgtk = { ... }:
-            {
-              programs.emacs = {
-                enable = true;
-                package = pkgs.emacs-unstable-pgtk;
-                extraPackages = import ./epkgs { inherit pkgs; };
-              };
-
-              home.file = {
-                ".emacs.d/init.el".source = ./init.el;
-                ".emacs.d/early-init.el".source = ./early-init.el;
-                ".emacs.d/templates".source = ./templates;
-                ".ddskk/init".source = ./.ddskk/init;
-                ".emacs.d/lisp".source = ./.emacs.d/lisp;
-              };
-            };
-          stable = { ... }:
-            {
-              programs.emacs = {
-                enable = true;
-                package = pkgs.emacs;
-                extraPackages = import ./epkgs { inherit pkgs; };
-              };
-
-              home.file = {
-                ".emacs.d/init.el".source = ./init.el;
-                ".emacs.d/early-init.el".source = ./early-init.el;
-                ".emacs.d/templates".source = ./templates;
-                ".ddskk/init".source = ./.ddskk/init;
-                ".emacs.d/lisp".source = ./.emacs.d/lisp;
-              };
-            };
-          macport = { ... }:
-            {
-              programs.emacs = {
-                enable = true;
-                package = pkgs.emacs-macport;
-                extraPackages = import ./epkgs { inherit pkgs; };
-              };
-              
-              home.file = {
-                ".emacs.d/init.el".source = ./init.el;
-                ".emacs.d/early-init.el".source = ./early-init.el;
-                ".emacs.d/templates".source = ./templates;
-                ".ddskk/init".source = ./.ddskk/init;
-                ".emacs.d/lisp".source = ./.emacs.d/lisp;
-              };
-            };
+          pgtk = mkHmModule pkgs.emacs-unstable-pgtk;
+          stable = mkHmModule pkgs.emacs;
+          macport = mkHmModule pkgs.emacs-macport;
         };
       }
     );
