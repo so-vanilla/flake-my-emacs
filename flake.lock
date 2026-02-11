@@ -21,6 +21,29 @@
         "type": "github"
       }
     },
+    "flake-my-claude": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1770817288,
+        "narHash": "sha256-YyKTSla8E7xpfUo2wFPWjp3B6mHtRSCF2wXNoESr/aI=",
+        "owner": "so-vanilla",
+        "repo": "flake-my-claude",
+        "rev": "5ec1551d054817ec6f4328a9e43429bf45daf467",
+        "type": "github"
+      },
+      "original": {
+        "owner": "so-vanilla",
+        "repo": "flake-my-claude",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
@@ -74,6 +97,7 @@
     "root": {
       "inputs": {
         "emacs-overlay": "emacs-overlay",
+        "flake-my-claude": "flake-my-claude",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
       }

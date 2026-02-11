@@ -8,6 +8,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    flake-my-claude = {
+      url = "github:so-vanilla/flake-my-claude";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
   outputs = { ... }@inputs:
@@ -17,6 +22,9 @@
           inherit system;
           overlays = [(import inputs.emacs-overlay)];
         };
+        extraPkgs = {
+          claude-code-modeline = inputs.flake-my-claude.packages.${system}.claude-code-modeline;
+        };
       in
       {
         homeManagerModules = {
@@ -25,7 +33,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-unstable-pgtk;
-                extraPackages = import ./epkgs { inherit pkgs; };
+                extraPackages = import ./epkgs { inherit pkgs extraPkgs; };
               };
 
               home.file = {
@@ -41,7 +49,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs;
-                extraPackages = import ./epkgs { inherit pkgs; };
+                extraPackages = import ./epkgs { inherit pkgs extraPkgs; };
               };
 
               home.file = {
@@ -57,7 +65,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-macport;
-                extraPackages = import ./epkgs { inherit pkgs; };
+                extraPackages = import ./epkgs { inherit pkgs extraPkgs; };
               };
               
               home.file = {
