@@ -1002,7 +1002,10 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
           :custom
           ((claude-code-ide-terminal-backend . 'eat))
           :bind (("C-x c m" . claude-code-ide-menu)
-                 ("C-x c t" . claude-code-ide-toggle))))))
+                 ("C-x c t" . claude-code-ide-toggle)))
+        (leaf claude-code-modeline
+          :after claude-code-ide
+          :global-minor-mode claude-code-modeline-mode))))
 
 (leaf *others
   :config
