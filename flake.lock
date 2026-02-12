@@ -1,5 +1,28 @@
 {
   "nodes": {
+    "aide": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1770899645,
+        "narHash": "sha256-K4fBhsTZiILkUaNV4jhrC0T/bpm8xs5zRvDpexjHEdY=",
+        "owner": "so-vanilla",
+        "repo": "aide",
+        "rev": "9a7c38a572b76669c9d85345585c19fdb962fde3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "so-vanilla",
+        "repo": "aide",
+        "type": "github"
+      }
+    },
     "emacs-overlay": {
       "inputs": {
         "nixpkgs": [
@@ -18,29 +41,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "type": "github"
-      }
-    },
-    "flake-my-claude": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1770817288,
-        "narHash": "sha256-YyKTSla8E7xpfUo2wFPWjp3B6mHtRSCF2wXNoESr/aI=",
-        "owner": "so-vanilla",
-        "repo": "flake-my-claude",
-        "rev": "5ec1551d054817ec6f4328a9e43429bf45daf467",
-        "type": "github"
-      },
-      "original": {
-        "owner": "so-vanilla",
-        "repo": "flake-my-claude",
         "type": "github"
       }
     },
@@ -96,8 +96,8 @@
     },
     "root": {
       "inputs": {
+        "aide": "aide",
         "emacs-overlay": "emacs-overlay",
-        "flake-my-claude": "flake-my-claude",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
       }

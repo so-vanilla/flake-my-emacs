@@ -26,10 +26,7 @@
         };
         extraPkgs = {
           aide-modeline = inputs.aide.packages.${system}.aide-modeline;
-          aide-persp-side-bar = inputs.aide.packages.${system}.aide-persp-sidebar;
-        };
-        extraPkgs = {
-          claude-code-modeline = inputs.flake-my-claude.packages.${system}.claude-code-modeline;
+          aide-persp-side-bar = inputs.aide.packages.${system}.aide-persp-side-bar;
         };
       in
       {

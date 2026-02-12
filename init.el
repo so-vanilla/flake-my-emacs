@@ -1003,14 +1003,14 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
           ((claude-code-ide-terminal-backend . 'eat))
           :bind (("C-x c m" . claude-code-ide-menu)
                  ("C-x c t" . claude-code-ide-toggle)))
-        (leaf claude-code-modeline
+        (leaf aide-modeline
           :after claude-code-ide
-          :global-minor-mode claude-code-modeline-mode))))
+          :require t
+          :global-minor-mode aide-modeline-mode))))
 
 (leaf *others
   :config
-  (leaf persp-side-bar
-    :load-path "~/.emacs.d/lisp"
+  (leaf aide-persp-side-bar
     :require t)
 
   (leaf perspective
@@ -1041,9 +1041,9 @@ _r_: rename              _j_: next           _f_: focus
       ("p" persp-prev)
       ("j" persp-next)
       ("p" persp-prev)
-      ("s" persp-side-bar-show :exit t)
-      ("t" persp-side-bar-toggle :exit t)
-      ("f" persp-side-bar-focus :exit t)
+      ("s" aide-persp-side-bar-show :exit t)
+      ("t" aide-persp-side-bar-toggle :exit t)
+      ("f" aide-persp-side-bar-focus :exit t)
       ("q" nil :exit t)
       ("C-m" nil :exit t))))
 
