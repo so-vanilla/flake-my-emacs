@@ -1,5 +1,6 @@
 {
-  pkgs
+  pkgs,
+  extraPkgs ? { },
 }:
 epkgs:
 import ./leaf.nix { inherit epkgs; }
@@ -15,3 +16,7 @@ import ./leaf.nix { inherit epkgs; }
 ++ import ./ai.nix { inherit epkgs; }
 ++ import ./utils.nix { inherit epkgs; }
 ++ import ./appearance.nix { inherit epkgs; }
+++ [
+  extraPkgs.aide-modeline
+  extraPkgs.aide-persp-side-bar
+]
