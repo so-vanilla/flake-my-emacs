@@ -28,6 +28,9 @@
           aide-modeline = inputs.aide.packages.${system}.aide-modeline;
           aide-persp-side-bar = inputs.aide.packages.${system}.aide-persp-sidebar;
         };
+        extraPkgs = {
+          claude-code-modeline = inputs.flake-my-claude.packages.${system}.claude-code-modeline;
+        };
       in
       {
         homeManagerModules = {
@@ -37,7 +40,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-unstable-pgtk;
-                extraPackages = import ./epkgs { inherit pkgs; };
+                extraPackages = import ./epkgs { inherit pkgs extraPkgs; };
               };
 
               home.file = {
@@ -54,7 +57,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs;
-                extraPackages = import ./epkgs { inherit pkgs; };
+                extraPackages = import ./epkgs { inherit pkgs extraPkgs; };
               };
 
               home.file = {
@@ -71,7 +74,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-macport;
-                extraPackages = import ./epkgs { inherit pkgs; };
+                extraPackages = import ./epkgs { inherit pkgs extraPkgs; };
               };
 
               home.file = {
