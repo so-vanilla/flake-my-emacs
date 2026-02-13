@@ -1010,6 +1010,11 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
 
 (leaf *others
   :config
+  (leaf aide-session-status
+    :after claude-code-ide
+    :require t
+    :global-minor-mode aide-session-status-mode)
+
   (leaf aide-persp-side-bar
     :require t)
 

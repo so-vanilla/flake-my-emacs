@@ -18,5 +18,6 @@ import ./leaf.nix { inherit epkgs; }
 ++ import ./appearance.nix { inherit epkgs; }
 ++ [
   extraPkgs.aide-modeline
+  extraPkgs.aide-session-status
   extraPkgs.aide-persp-side-bar
 ]

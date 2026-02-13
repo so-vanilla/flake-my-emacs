@@ -26,6 +26,7 @@
         };
         extraPkgs = {
           aide-modeline = inputs.aide.packages.${system}.aide-modeline;
+          aide-session-status = inputs.aide.packages.${system}.aide-session-status;
           aide-persp-side-bar = inputs.aide.packages.${system}.aide-persp-side-bar;
         };
       in
