@@ -1073,7 +1073,9 @@ _r_: rename              _j_: next           _f_: focus
      (eat-special-edit-default-template . "default")
      (eat-special-edit-templates
       . '((:name "default"
-           :template "* 要求\n** 背景\n\n** 要求\n\n* 要件\n\n* ワークフロー\n")))))
+           :template "* 要求\n** 背景\n\n** 要求\n\n* 要件\n\n* ワークフロー\n1. 現状の調査\n2. 妥当性の確認\n3. 実装について不足の情報について私に問う\n4. ブランチの作成、チェックアウト(現在のワークスペースがworktreeなら不要)\n5. プランの作成\n   ここで調整\n6. 実行\n7. コミット\n   マージやプッシュは手動または別途指示を出すためしないこと\n")
+          (:name "adjust"
+           :template "* 対象\n\n* 変更内容\n\n* 補足\n")))))
 
   (leaf eat
     :url "https://codeberg.org/akib/emacs-eat"
