@@ -1069,7 +1069,11 @@ _r_: rename              _j_: next           _f_: focus
     :require t
     :custom
     ((eat-special-edit-major-mode . 'org-mode)
-     (eat-special-edit-template . "* 要求\n** 背景\n\n** 要求\n\n* 要件\n\n* ワークフロー\n")))
+     (eat-special-edit-use-default-template . t)
+     (eat-special-edit-default-template . "default")
+     (eat-special-edit-templates
+      . '((:name "default"
+           :template "* 要求\n** 背景\n\n** 要求\n\n* 要件\n\n* ワークフロー\n")))))
 
   (leaf eat
     :url "https://codeberg.org/akib/emacs-eat"
