@@ -1015,7 +1015,7 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
     :require t
     :global-minor-mode aide-session-status-mode)
 
-  (leaf aide-persp-side-bar
+  (leaf aide-persp-sidebar
     :require t)
 
   (leaf perspective
@@ -1046,9 +1046,9 @@ _r_: rename              _j_: next           _f_: focus
       ("p" persp-prev)
       ("j" persp-next)
       ("p" persp-prev)
-      ("s" aide-persp-side-bar-show :exit t)
-      ("t" aide-persp-side-bar-toggle :exit t)
-      ("f" aide-persp-side-bar-focus :exit t)
+      ("s" aide-persp-sidebar-show :exit t)
+      ("t" aide-persp-sidebar-toggle :exit t)
+      ("f" aide-persp-sidebar-focus :exit t)
       ("q" nil :exit t)
       ("C-m" nil :exit t))))
 
@@ -1073,9 +1073,9 @@ _r_: rename              _j_: next           _f_: focus
      (eat-special-edit-default-template . "default")
      (eat-special-edit-templates
       . '((:name "default"
-           :template "* 要求\n** 背景\n\n** 要求\n\n* 要件\n\n* ワークフロー\n1. 現状の調査\n2. 妥当性の確認\n3. 実装について不足の情報について私に問う\n4. ブランチの作成、チェックアウト(現在のワークスペースがworktreeなら不要)\n5. プランの作成\n   ここで調整\n6. 実行\n7. コミット\n   マージやプッシュは手動または別途指示を出すためしないこと\n")
+                 :template "* 要求\n** 背景\n\n** 要求\n\n* 要件\n\n* ワークフロー\n1. 現状の調査\n2. 妥当性の確認\n3. 実装について不足の情報について私に問う\n4. ブランチの作成、チェックアウト(現在のワークスペースがworktreeなら不要)\n5. プランの作成\n   ここで調整\n6. 実行\n7. コミット\n   マージやプッシュは手動または別途指示を出すためしないこと\n")
           (:name "adjust"
-           :template "* 対象\n\n* 変更内容\n\n* 補足\n")))))
+                 :template "* 対象\n\n* 変更内容\n\n* 補足\n")))))
 
   (leaf eat
     :url "https://codeberg.org/akib/emacs-eat"
