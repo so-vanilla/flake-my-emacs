@@ -1001,8 +1001,7 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
           :ensure nil
           :custom
           ((claude-code-ide-terminal-backend . 'eat))
-          :bind (("C-x c m" . claude-code-ide-menu)
-                 ("C-x c t" . claude-code-ide-toggle)))
+          :bind (("M-c" . claude-code-ide-menu)))
         (leaf aide-modeline
           :after claude-code-ide
           :require t
@@ -1104,7 +1103,8 @@ _r_: rename              _j_: next           _f_: focus
      (append
       (list (vector meta-prefix-char ?e) (vector meta-prefix-char ?o)
             (vector meta-prefix-char ?j) (vector meta-prefix-char ?k)
-            (vector meta-prefix-char ?r) (vector meta-prefix-char ?i))
+            (vector meta-prefix-char ?r) (vector meta-prefix-char ?i)
+            (vector meta-prefix-char ?c))
       eat-semi-char-non-bound-keys))
     :bind
     (eat-mode-map
