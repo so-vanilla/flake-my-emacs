@@ -1071,7 +1071,7 @@ _r_: rename              _j_: next           _f_: focus
      (vterm-copy-mode-remove-fake-newlines . t))
     :bind
     (vterm-mode-map
-     ("M-e" . vterm-copy-mode)))
+     ("M-i" . eat-special-edit-open)))
 
   (leaf eat-special-edit
     :load-path "~/.emacs.d/lisp"
