@@ -1000,7 +1000,7 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
         (leaf claude-code-ide
           :ensure nil
           :custom
-          ((claude-code-ide-terminal-backend . 'eat))
+          ((claude-code-ide-terminal-backend . 'vterm))
           :bind (("M-c" . claude-code-ide-menu)))
         (leaf aide-modeline
           :after claude-code-ide
@@ -1062,6 +1062,16 @@ _r_: rename              _j_: next           _f_: focus
 
   (leaf mistty
     :url "https://github.com/szermatt/mistty")
+
+  (leaf vterm
+    :url "https://github.com/akermu/emacs-libvterm"
+    :custom
+    ((vterm-max-scrollback . 10000)
+     (vterm-kill-buffer-on-exit . t)
+     (vterm-copy-mode-remove-fake-newlines . t))
+    :bind
+    (vterm-mode-map
+     ("M-e" . vterm-copy-mode)))
 
   (leaf eat-special-edit
     :load-path "~/.emacs.d/lisp"

@@ -10,6 +10,7 @@ with epkgs; [
   ace-window
   mistty
   eat
+  vterm
   jinx
   apheleia
   exec-path-from-shell
