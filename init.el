@@ -1000,7 +1000,8 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
         (leaf claude-code-ide
           :ensure nil
           :custom
-          ((claude-code-ide-terminal-backend . 'vterm))
+          ((claude-code-ide-terminal-backend . 'vterm)
+           (claude-code-ide-cli-extra-flags . "--dangerously-skip-permissions"))
           :bind (("M-c" . claude-code-ide-menu)))
         (leaf aide-modeline
           :after claude-code-ide
