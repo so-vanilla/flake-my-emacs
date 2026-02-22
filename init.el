@@ -916,8 +916,12 @@ _r_: rename              _j_: next           _f_: focus
     :custom
     ((vterm-max-scrollback . 10000)
      (vterm-kill-buffer-on-exit . t)
-     (vterm-copy-mode-remove-fake-newlines . t)
-     (vterm-keymap-exceptions . '("M-o" "M-e" "M-j" "M-k" "M-m" "M-i" "M-c" "M-:")))
+     (vterm-copy-mode-remove-fake-newlines . t))
+    :config
+    (customize-set-variable
+     'vterm-keymap-exceptions
+     (append '("M-e" "M-j" "M-k" "M-m" "M-i" "M-c" "M-:")
+             vterm-keymap-exceptions))
     :bind
     (vterm-mode-map
      ("M-e" . vterm-copy-mode)

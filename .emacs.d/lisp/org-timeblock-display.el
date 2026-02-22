@@ -82,13 +82,13 @@ Uses `catppuccin-get-color' if available, otherwise Latte fallback."
 
 (defun org-timeblock-display--face-from-color (hex-color)
   "Return face for block characters with HEX-COLOR foreground."
-  `((t :foreground ,hex-color)))
+  `(:foreground ,hex-color))
 
 (defun org-timeblock-display--bg-face-from-color (hex-color)
   "Return face for right side with subtle HEX-COLOR background tint."
   (let* ((base (or (org-timeblock-display--get-color 'base) "#eff1f5"))
          (bg (org-timeblock-display--blend-color hex-color base 0.12)))
-    `((t :background ,bg))))
+    `(:background ,bg)))
 
 (defun org-timeblock-display--blend-color (color base ratio)
   "Blend COLOR with BASE at RATIO (0.0=base, 1.0=color).
@@ -309,7 +309,7 @@ NOW-ROW is current time row or nil."
          (time-label (if (= minute 0)
                          (format "%02d" hour)
                        "  "))
-         (time-face `((t :foreground ,(org-timeblock-display--get-color 'surface1))))
+         (time-face `(:foreground ,(org-timeblock-display--get-color 'surface1)))
          (now-p (and now-row (= row now-row)))
          ;; Find entry covering this row
          (active-entry (seq-find
@@ -321,7 +321,7 @@ NOW-ROW is current time row or nil."
     (let ((label-str
            (cond
             (now-p
-             (let ((now-str (propertize "◀" 'face `((t :foreground ,(org-timeblock-display--get-color 'red))))))
+             (let ((now-str (propertize "◀" 'face `(:foreground ,(org-timeblock-display--get-color 'red)))))
                (concat now-str (make-string (- 2 (string-width "◀")) ?\s) " ")))
             ((not (string-blank-p time-label))
              (concat (propertize time-label 'face time-face) " "))
@@ -397,7 +397,7 @@ NOW-ROW is current time row or nil."
             (push (propertize padded-right 'face right-face) line-parts)))
       ;; No active entry - empty row
       (let* ((empty-block (propertize (make-string block-width ?\s)
-                                      'face `((t :background ,(org-timeblock-display--get-color 'mantle)))))
+                                      'face `(:background ,(org-timeblock-display--get-color 'mantle))))
              (empty-right (make-string (- total-width 3 block-width) ?\s)))
         (push (concat empty-block empty-right) line-parts)))
     ;; Store in line-map
