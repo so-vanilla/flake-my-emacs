@@ -942,7 +942,7 @@ _r_: rename              _j_: next           _f_: focus
 
   (leaf org-timeblock
     :load-path "~/.emacs.d/lisp"
-    :require org-timeblock
+    :require t
     :custom
     `((org-timeblock-worklog-break-title . "休憩")
       (org-timeblock-worklog-other-category . ,(or (getenv "TB_OTHER") "その他")))
