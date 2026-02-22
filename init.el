@@ -482,11 +482,13 @@ _a_: agenda
 _j_: journal
 _r_: roam
 _c_: capture
+_s_: sync CalDAV
 "
     ("a" org-agenda)
     ("j" hydra-org-journal/body)
     ("r" hydra-org-roam/body)
     ("c" org-capture)
+    ("s" my/org-caldav-sync)
     ("C-m" nil)
     ("q" nil))
    (hydra-org-mode
@@ -651,6 +653,48 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
       ("s" org-roam-db-sync)
       ("g" org-roam-graph)
       ("q" nil))))
+
+  (leaf org-caldav
+    :url "https://github.com/dengste/org-caldav"
+    :if is-private-host
+    :custom
+    ((org-icalendar-timezone . "Asia/Tokyo")
+     (org-icalendar-include-todo . 'all)
+     (org-caldav-sync-todo . t)
+     (org-caldav-delete-calendar-entries . 'always)
+     (org-caldav-delete-org-entries . 'always)
+     (org-icalendar-categories . '(local-tags))
+     (org-caldav-show-sync-results . nil))
+    :config
+    (let ((todo (expand-file-name "todo.org" my/org-directory))
+          (sched (expand-file-name "schedule.org" my/org-directory)))
+      (setq org-caldav-calendars
+            `((:calendar-id "67B2-67412200-1A7-7F1B4200" :files (,todo) :inbox ,todo)
+              (:calendar-id "11D3-67412200-21D-48611280" :files (,sched) :inbox ,sched))))
+    (setq org-caldav-url (getenv "CALDAV_LINK"))
+    (defun my/org-caldav-sync (&optional silent)
+      "org-caldav-sync with unsaved buffer check.
+SILENT non-nil skips prompt and aborts if unsaved."
+      (interactive)
+      (let* ((files (mapcan (lambda (cal)
+                              (copy-sequence (plist-get cal :files)))
+                            org-caldav-calendars))
+             (unsaved (seq-filter
+                       (lambda (f)
+                         (when-let ((buf (find-buffer-visiting f)))
+                           (buffer-modified-p buf)))
+                       files)))
+        (cond
+         ((null unsaved)
+          (org-caldav-sync))
+         (silent nil)
+         ((y-or-n-p (format "未保存のバッファがあります: %s 保存して同期しますか？"
+                            (mapconcat #'file-name-nondirectory unsaved ", ")))
+          (dolist (f unsaved)
+            (with-current-buffer (find-buffer-visiting f)
+              (save-buffer)))
+          (org-caldav-sync)))))
+    (run-with-timer 900 900 (lambda () (my/org-caldav-sync t))))
 
   (leaf org-gfm
     :url "https://github.com/larstvei/ox-gfm"
