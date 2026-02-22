@@ -24,6 +24,12 @@
 
 (use-package leaf)
 
+(leaf *paths
+  :preface
+  (defvar my/org-directory "~/org")
+  (defvar my/claude-code-ide-path "~/repos/github.com/manzaltu/claude-code-ide.el")
+  (defvar my/custom-lisp-path "~/.emacs.d/lisp"))
+
 (leaf *leaf
   :config
   (leaf leaf-keywords
@@ -65,21 +71,6 @@
      (inhibit-startup-screen . t)
      (inhibit-startup-buffer-menu . t)))
 
-  (leaf scroll-bar
-    :tag "builtin"
-    :config
-    (scroll-bar-mode -1))
-
-  (leaf menu-bar
-    :tag "builtin"
-    :config
-    (menu-bar-mode -1))
-
-  (leaf tool-bar
-    :tag "builtin"
-    :config
-    (tool-bar-mode -1))
-
   (leaf files
     :tag "builtin"
     :custom
@@ -90,6 +81,7 @@
   (leaf simple
     :tag "builtin"
     :preface
+    (defvar copy-process nil)
     (defun my/clipboard-copy-wayland (text)
       (setq copy-process (make-process :name "clipboard-copy"
 					                   :buffer nil
@@ -133,8 +125,7 @@
     :hook
     ((before-save-hook . (delete-trailing-whitespace)))
     :custom
-    ((copy-process . nil)
-     (indent-tabs-mode . nil))
+    ((indent-tabs-mode . nil))
     :config
     (if (string= system-type "darwin")
         (setq interprogram-cut-function 'my/clipboard-copy-darwin
@@ -482,7 +473,7 @@ _C-n_: down
   ((org-src-preserve-indentation . nil)
    (org-edit-src-content-indentation . 0)
    (org-use-speed-commands . t)
-   (org-directory . "~/org"))
+   (org-directory . my/org-directory))
   :bind
   (("<f2>" . hydra-org/body)
    (org-mode-map
@@ -497,12 +488,10 @@ _a_: agenda
 _j_: journal
 _r_: roam
 _c_: capture
-_s_: sync CalDAV
 "
     ("a" org-agenda)
     ("j" hydra-org-journal/body)
     ("r" hydra-org-roam/body)
-    ("s" org-caldav-sync)
     ("c" org-capture)
     ("C-m" nil)
     ("q" nil))
@@ -533,7 +522,8 @@ _r_: row(table)
   (leaf org-agenda
     :tag "builtin"
     :custom
-    ((org-agenda-files . '("~/org/todo.org" "~/org/schedule.org"))
+    ((org-agenda-files . (list (expand-file-name "todo.org" my/org-directory)
+                               (expand-file-name "schedule.org" my/org-directory)))
      (org-agenda-span . 'day)
      (org-agenda-skip-deadline-if-done . nil)
      (org-agenda-skip-schedule-if-done . nil)
@@ -546,7 +536,8 @@ _r_: row(table)
     ((org-agenda-custom-commands .
                                  `(("g" "General"
                                     ((agenda ""
-                                             ((org-agenda-files '("~/org/todo.org" "~/org/schedule.org"))
+                                             ((org-agenda-files (list (expand-file-name "todo.org" my/org-directory)
+                                                                     (expand-file-name "schedule.org" my/org-directory)))
                                               (org-agenda-span 'day)
                                               (org-super-agenda-groups `((:name "schedule"
                                                                                 :time-grid t
@@ -555,7 +546,7 @@ _r_: row(table)
                                                                          (:discard (:anything t))))))
                                      (alltodo ""
                                               ((org-agenda-span 'day)
-                                               (org-agenda-files '("~/org/todo.org"))
+                                               (org-agenda-files (list (expand-file-name "todo.org" my/org-directory)))
                                                (org-agenda-entry-types '(deadline scheduled timestamp))
                                                (org-super-agenda-groups `((:name "Mind"
                                                                                  :tag "mind")
@@ -581,9 +572,9 @@ _r_: row(table)
     :tag "builtin"
     :custom
     (org-capture-templates .
-                           '(("t" "Todo" entry (file "~/org/todo.org")
+                           `(("t" "Todo" entry (file ,(expand-file-name "todo.org" my/org-directory))
                               "* TODO %?\n")
-                             ("s" "Schedule" entry (file "~/org/schedule.org")
+                             ("s" "Schedule" entry (file ,(expand-file-name "schedule.org" my/org-directory))
                               "* %?\n"))))
 
   (leaf org-timer
@@ -613,7 +604,7 @@ _I_: insert as item
   (leaf org-journal
     :url "https://github.com/bastibe/org-journal"
     :custom
-    ((org-journal-dir . "~/org/journal/")
+    ((org-journal-dir . (expand-file-name "journal" my/org-directory))
      (org-journal-file-format . "%Y-%m-%d.org"))
     :hydra
     ((hydra-org-journal
@@ -640,7 +631,7 @@ _n_: new entry  _S_: search(all)
   (leaf org-roam
     :url "https://github.com/org-roam/org-roam"
     :custom
-    `((org-roam-directory . ,(file-truename "~/org/org-roam")))
+    `((org-roam-directory . ,(file-truename (expand-file-name "org-roam" my/org-directory))))
     :config
     (org-roam-db-autosync-mode)
     :hydra
@@ -669,28 +660,6 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
       ("g" org-roam-graph)
       ("q" nil))))
 
-  (leaf org-caldav
-    :url "https://github.com/dengste/org-caldav"
-    :if is-private-host
-    :custom
-    `((org-caldav-calendars .
-                            '((:calendar-id "67B2-67412200-1A7-7F1B4200" :files ("~/org/todo.org")
-		                                    :inbox "~/org/todo.org")
-                              (:calendar-id "11D3-67412200-21D-48611280" :files ("~/org/schedule.org")
-		                                    :inbox "~/org/schedule.org")))
-      (org-caldav-url . ,(getenv "CALDAV_LINK"))
-      (org-icalendar-timezone . "Asia/Tokyo")
-      (org-icalendar-include-todo . 'all)
-      (org-caldav-sync-todo . t)))
-
-  (leaf org-ai
-    :url "https://github.com/rksm/org-ai"
-    :if is-private-host
-    :global-minor-mode org-ai-global-mode
-    :custom
-    `((org-ai-openai-api-token . ,(getenv "ORG_AI_KEY"))
-      (org-ai-default-chat-model . "gpt-4o")))
-
   (leaf org-gfm
     :url "https://github.com/larstvei/ox-gfm"
     :after org)
@@ -704,7 +673,7 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
     ((org-mode-hook . org-download-enable))
     :custom
     ((org-download-method . 'directory)
-     (org-download-image-dir . "~/org/images")))
+     (org-download-image-dir . (expand-file-name "images" my/org-directory))))
 
   (leaf valign
     :url "https://github.com/casouri/valign"
@@ -769,6 +738,9 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
         (unless (treesit-language-available-p lang)
           (message "Installing %s..." lang)
           (treesit-install-language-grammar lang))))
+
+    ;; 起動時に未インストールのグラマーを自動インストール
+    (my-treesit-install-all-grammars)
 
     (leaf bash-ts-mode
       :tag "builtin"
@@ -875,9 +847,9 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
   (leaf copilot-chat
     :url "https://github.com/chep/copilot-chat.el")
   
-  (if (file-exists-p "~/repos/github.com/manzaltu/claude-code-ide.el/")
+  (if (file-exists-p (file-name-as-directory my/claude-code-ide-path))
       (progn
-        (add-to-list 'load-path "~/repos/github.com/manzaltu/claude-code-ide.el")
+        (add-to-list 'load-path my/claude-code-ide-path)
         (leaf claude-code-ide
           :ensure nil
           :custom
@@ -947,21 +919,20 @@ _r_: rename              _j_: next           _f_: focus
     :url "https://github.com/wbolster/emacs-direnv"
     :global-minor-mode t)
 
-  (leaf mistty
-    :url "https://github.com/szermatt/mistty")
-
   (leaf vterm
     :url "https://github.com/akermu/emacs-libvterm"
     :custom
     ((vterm-max-scrollback . 10000)
      (vterm-kill-buffer-on-exit . t)
-     (vterm-copy-mode-remove-fake-newlines . t))
+     (vterm-copy-mode-remove-fake-newlines . t)
+     (vterm-keymap-exceptions . '("M-o" "M-e" "M-j" "M-k" "M-m" "M-i" "M-c" "M-:")))
     :bind
     (vterm-mode-map
+     ("M-e" . vterm-copy-mode)
      ("M-i" . eat-special-edit-open)))
 
   (leaf eat-special-edit
-    :load-path "~/.emacs.d/lisp"
+    :load-path my/custom-lisp-path
     :require t
     :custom
     ((eat-special-edit-major-mode . 'org-mode)
@@ -974,7 +945,7 @@ _r_: rename              _j_: next           _f_: focus
                  :template "* 対象\n\n* 変更内容\n\n* 補足\n")))))
 
   (leaf org-timeblock
-    :load-path "~/.emacs.d/lisp"
+    :load-path my/custom-lisp-path
     :require org-timeblock
     :custom
     `((org-timeblock-worklog-break-title . "休憩")
@@ -1006,26 +977,18 @@ _r_: rename              _j_: next           _f_: focus
           (eat-emacs-mode)
         (eat-semi-char-mode)))
 
-    (defun eat-refresh ()
-      "Refresh eat terminal by resizing window width +1 then -1."
-      (interactive)
-      (let ((window (selected-window)))
-        (window-resize window 10 t)
-        (window-resize window -10 t)))
-
     :config
     (customize-set-variable
      'eat-semi-char-non-bound-keys
      (append
       (list (vector meta-prefix-char ?e) (vector meta-prefix-char ?o)
             (vector meta-prefix-char ?j) (vector meta-prefix-char ?k)
-            (vector meta-prefix-char ?r) (vector meta-prefix-char ?i)
+            (vector meta-prefix-char ?m) (vector meta-prefix-char ?i)
             (vector meta-prefix-char ?c))
       eat-semi-char-non-bound-keys))
     :bind
     (eat-mode-map
      ("M-e" . eat-toggle-mode)
-     ("M-r" . eat-refresh)
      ("M-i" . eat-special-edit-open)))
   
   (leaf jinx
@@ -1065,6 +1028,7 @@ _r_: rename              _j_: next           _f_: focus
 
   (leaf ddskk
     :url "https://github.com/skk-dev/ddskk"
+    ;; 会社環境(macOS)でのみ使用。個人環境(vanilla)ではfcitx5を使用
     :if (not is-private-host)
     :custom
     ((skk-preload . t)
