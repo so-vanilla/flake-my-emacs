@@ -33,6 +33,7 @@
 (leaf *leaf
   :config
   (leaf leaf-keywords
+    :require t
     :config
     (leaf-keywords-init))
 
