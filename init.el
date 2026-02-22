@@ -666,8 +666,8 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
      (org-icalendar-categories . '(local-tags))
      (org-caldav-show-sync-results . nil))
     :config
-    (let ((todo (expand-file-name "todo.org" my/org-directory))
-          (sched (expand-file-name "schedule.org" my/org-directory)))
+    (let ((todo (expand-file-name "todo.org" org-directory))
+          (sched (expand-file-name "schedule.org" org-directory)))
       (setq org-caldav-calendars
             `((:calendar-id "67B2-67412200-1A7-7F1B4200" :files (,todo) :inbox ,todo)
               (:calendar-id "11D3-67412200-21D-48611280" :files (,sched) :inbox ,sched))))
@@ -775,8 +775,9 @@ SILENT non-nil skips prompt and aborts if unsaved."
           (message "Installing %s..." lang)
           (treesit-install-language-grammar lang))))
 
-    ;; 起動時に未インストールのグラマーを自動インストール
-    (my-treesit-install-all-grammars)
+    ;; 起動時に未インストールのグラマーを自動インストール（ccが必要）
+    (when (executable-find "cc")
+      (my-treesit-install-all-grammars))
 
     (leaf bash-ts-mode
       :tag "builtin"
@@ -914,6 +915,8 @@ SILENT non-nil skips prompt and aborts if unsaved."
 
   (leaf perspective
     :url "https://github.com/nex3/perspective-el"
+    :custom
+    ((persp-suppress-no-prefix-key-warning . t))
     :init
     (persp-mode)
 
@@ -1080,6 +1083,7 @@ _r_: rename              _j_: next           _f_: focus
 
   (leaf apheleia
     :url "https://github.com/radian-software/apheleia"
+    :require t
     :global-minor-mode apheleia-global-mode
     :config
     ;; go
