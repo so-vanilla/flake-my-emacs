@@ -686,14 +686,14 @@ SILENT non-nil skips prompt and aborts if unsaved."
                        files)))
         (cond
          ((null unsaved)
-          (org-caldav-sync))
+          (save-window-excursion (org-caldav-sync)))
          (silent nil)
          ((y-or-n-p (format "未保存のバッファがあります: %s 保存して同期しますか？"
                             (mapconcat #'file-name-nondirectory unsaved ", ")))
           (dolist (f unsaved)
             (with-current-buffer (find-buffer-visiting f)
               (save-buffer)))
-          (org-caldav-sync)))))
+          (save-window-excursion (org-caldav-sync))))))
     (run-with-timer 900 900 (lambda () (my/org-caldav-sync t))))
 
   (leaf org-gfm
@@ -964,10 +964,12 @@ _r_: rename              _j_: next           _f_: focus
     ((vterm-max-scrollback . 10000)
      (vterm-kill-buffer-on-exit . t)
      (vterm-copy-mode-remove-fake-newlines . t))
+    :hook
+    ((vterm-mode-hook . (lambda () (puni-mode -1))))
     :config
     (customize-set-variable
      'vterm-keymap-exceptions
-     (append '("M-e" "M-j" "M-k" "M-m" "M-i" "M-c" "M-:")
+     (append '("M-j" "M-k" "M-m" "M-c" "M-:")
              vterm-keymap-exceptions))
     :bind
     (vterm-mode-map
@@ -1184,6 +1186,54 @@ _r_: rename              _j_: next           _f_: focus
         (interactive)
         (let ((python-home (shell-command-to-string "python -c 'import sys; print(sys.prefix, end=\"\")'")))
           (insert (format "(initialize! :python-home \"%s\")" python-home))))
+
+      (defvar my/idle-agenda-seconds 600
+        "Seconds of idle time before showing org-agenda via Claude.")
+
+      (defvar my/idle-agenda-process nil
+        "Running Claude process for idle agenda.")
+
+      (defvar my/idle-agenda-prompt
+        "あなたはEmacsを emacsclient -e 経由で操作するエージェントです。
+org-agendaの \"g\" カスタムビューを適切なウィンドウに表示してください。
+
+手順:
+1. ウィンドウレイアウトを取得:
+   emacsclient -e '(mapcar (lambda (w) (list (buffer-name (window-buffer w)) (window-edges w) (window-dedicated-p w))) (window-list))'
+
+2. 結果を分析し「ワークスペース」ウィンドウを特定:
+   - window-dedicated-p が非nil のウィンドウを全て除外（サイドバー、Claude、その他dedicated）
+   - ミニバッファ（ *Minibuf- で始まるもの）を除外
+   - 残り（dedicated=nil）の中で面積 (right-left)*(bottom-top) が最大のウィンドウを選択
+   - 注: eat ターミナルはワークスペースで利用されるため dedicated=nil。除外しないこと
+   - 該当なしなら操作不要。doneと出力して終了
+
+3. 特定したバッファ名 BUFFER を使って実行:
+   emacsclient -e '(let ((w (get-buffer-window \"BUFFER\"))) (when w (with-selected-window w (let ((org-agenda-window-setup (quote current-window))) (org-agenda nil \"g\")))))'
+   BUFFERは特定したバッファ名に置換。
+
+完了したら done とだけ出力。エラー時はエラー内容を出力。")
+
+      (defun my/show-idle-agenda ()
+        "Call Claude Code headlessly to show org-agenda in workspace window."
+        (when (and (not (process-live-p my/idle-agenda-process))
+                   (not (minibufferp)))
+          (let ((check-proc (start-process "claude-agenda-check" nil
+                                           "claude" "-p" "ok" "--max-turns" "1" "--model" "haiku")))
+            (set-process-sentinel
+             check-proc
+             (lambda (proc event)
+               (when (and (string-match-p "finished" event)
+                          (zerop (process-exit-status proc)))
+                 (setq my/idle-agenda-process
+                       (start-process "claude-idle-agenda" "*claude-idle-agenda*"
+                                      "claude" "-p" my/idle-agenda-prompt
+                                      "--dangerously-skip-permissions"
+                                      "--model" "haiku"
+                                      "--max-turns" "3"))))))))
+
+      (run-with-idle-timer my/idle-agenda-seconds t #'my/show-idle-agenda)
+
       t)
   nil)
 
