@@ -749,6 +749,7 @@ SILENT non-nil skips prompt and aborts if unsaved."
           (css "https://github.com/tree-sitter/tree-sitter-css")
           (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
           (go "https://github.com/tree-sitter/tree-sitter-go")
+          (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
           (hcl "https://github.com/tree-sitter-grammars/tree-sitter-hcl")
           (html "https://github.com/tree-sitter/tree-sitter-html")
           (java "https://github.com/tree-sitter/tree-sitter-java")
@@ -791,6 +792,14 @@ SILENT non-nil skips prompt and aborts if unsaved."
       :tag "builtin"
       :mode "Dockerfile\\'")
 
+    (leaf go-ts-mode
+      :tag "builtin"
+      :mode "\\.go\\'")
+
+    (leaf go-mod-ts-mode
+      :tag "builtin"
+      :mode "go\\.mod\\'")
+
     (leaf hcl-ts-mode
       ;; hcl is not supported in Emacs built-in treesit yet
       :if nil
@@ -799,6 +808,10 @@ SILENT non-nil skips prompt and aborts if unsaved."
     (leaf html-ts-mode
       :tag "builtin"
       :mode "\\.html?\\'")
+
+    (leaf java-ts-mode
+      :tag "builtin"
+      :mode "\\.java\\'")
 
     (leaf js-ts-mode
       :tag "builtin"
@@ -866,9 +879,7 @@ SILENT non-nil skips prompt and aborts if unsaved."
   (leaf elisp-mode
     :tag "builtin")
 
-  (leaf go-mode
-    :url "https://github.com/dominikh/go-mode.el"
-    :mode "\\.go\\'"))
+)
 
 (leaf *ai-assistant
   :config
@@ -1089,17 +1100,40 @@ _r_: rename              _j_: next           _f_: focus
     :global-minor-mode apheleia-global-mode
     :config
     ;; go
-    (setf (alist-get 'goimports apheleia-formatters) '("nix-shell" "-p" "gotools" "--run" "goimports"))
-    (setf (alist-get 'go-mode apheleia-mode-alist) 'goimports)
+    (setf (alist-get 'goimports apheleia-formatters) '("," "goimports"))
+    (setf (alist-get 'go-ts-mode apheleia-mode-alist) 'goimports)
     ;; python
-    (setf (alist-get 'black apheleia-formatters) '("black"))
-    (setf (alist-get 'python-ts-mode apheleia-mode-alist) 'black)
+    (setf (alist-get 'ruff apheleia-formatters) '("ruff" "format" "--stdin-filename" filepath "-"))
+    (setf (alist-get 'python-ts-mode apheleia-mode-alist) 'ruff)
     ;; nix
     (setf (alist-get 'nixfmt apheleia-formatters) '("nixfmt"))
     (setf (alist-get 'nix-ts-mode apheleia-mode-alist) 'nixfmt)
     ;; rust
     (setf (alist-get 'rustfmt apheleia-formatters) '("rustfmt"))
-    (setf (alist-get 'rust-ts-mode apheleia-mode-alist) 'rustfmt))
+    (setf (alist-get 'rust-ts-mode apheleia-mode-alist) 'rustfmt)
+    ;; bash
+    (setf (alist-get 'shfmt apheleia-formatters) '("shfmt" "-i" "2" "-"))
+    (setf (alist-get 'bash-ts-mode apheleia-mode-alist) 'shfmt)
+    ;; lua
+    (setf (alist-get 'stylua apheleia-formatters) '("stylua" "--search-parent-directories" "-"))
+    (setf (alist-get 'lua-ts-mode apheleia-mode-alist) 'stylua)
+    ;; java
+    (setf (alist-get 'google-java-format apheleia-formatters) '("google-java-format" "--aosp" "-"))
+    (setf (alist-get 'java-ts-mode apheleia-mode-alist) 'google-java-format)
+    ;; kotlin
+    (setf (alist-get 'ktlint apheleia-formatters) '("ktlint" "--format" "--stdin"))
+    (setf (alist-get 'kotlin-ts-mode apheleia-mode-alist) 'ktlint)
+    ;; prettier (組み込み定義済み、mode-alistのみ)
+    (setf (alist-get 'js-ts-mode apheleia-mode-alist) 'prettier)
+    (setf (alist-get 'typescript-ts-mode apheleia-mode-alist) 'prettier)
+    (setf (alist-get 'tsx-ts-mode apheleia-mode-alist) 'prettier)
+    (setf (alist-get 'css-ts-mode apheleia-mode-alist) 'prettier)
+    (setf (alist-get 'html-ts-mode apheleia-mode-alist) 'prettier)
+    (setf (alist-get 'json-ts-mode apheleia-mode-alist) 'prettier)
+    (setf (alist-get 'yaml-ts-mode apheleia-mode-alist) 'prettier)
+    ;; toml
+    (setf (alist-get 'taplo apheleia-formatters) '("taplo" "fmt" "-"))
+    (setf (alist-get 'toml-ts-mode apheleia-mode-alist) 'taplo))
 
   (leaf exec-path-from-shell
     :init

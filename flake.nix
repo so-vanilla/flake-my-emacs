@@ -96,6 +96,8 @@
                   ".emacs.d/templates".source = ./templates;
                   ".ddskk/init".source = ./.ddskk/init;
                   ".emacs.d/lisp".source = ./.emacs.d/lisp;
+                  ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
+                  ".emacs.d/lsp-bridge/kotlin-language-server.json".source = ./.emacs.d/lsp-bridge/kotlin-language-server.json;
                 }
                 // (lib.optionalAttrs pkgs.stdenv.isDarwin {
                   "Applications/Emacsclient.app".source =
@@ -118,6 +120,8 @@
                   ".emacs.d/templates".source = ./templates;
                   ".ddskk/init".source = ./.ddskk/init;
                   ".emacs.d/lisp".source = ./.emacs.d/lisp;
+                  ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
+                  ".emacs.d/lsp-bridge/kotlin-language-server.json".source = ./.emacs.d/lsp-bridge/kotlin-language-server.json;
                 }
                 // (lib.optionalAttrs pkgs.stdenv.isDarwin {
                   "Applications/Emacsclient.app".source =
@@ -140,6 +144,8 @@
                   ".emacs.d/templates".source = ./templates;
                   ".ddskk/init".source = ./.ddskk/init;
                   ".emacs.d/lisp".source = ./.emacs.d/lisp;
+                  ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
+                  ".emacs.d/lsp-bridge/kotlin-language-server.json".source = ./.emacs.d/lsp-bridge/kotlin-language-server.json;
                 }
                 // (lib.optionalAttrs pkgs.stdenv.isDarwin {
                   "Applications/Emacsclient.app".source =
