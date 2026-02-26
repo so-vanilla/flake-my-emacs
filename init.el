@@ -116,7 +116,7 @@
       (undo-redo)
       (hydra-undo/body))
     :hook
-    ((before-save-hook . (delete-trailing-whitespace)))
+    ((before-save-hook . delete-trailing-whitespace))
     :custom
     ((copy-process . nil)
      (indent-tabs-mode . nil))
