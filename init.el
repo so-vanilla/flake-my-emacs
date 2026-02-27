@@ -1138,7 +1138,7 @@ _r_: rename              _j_: next           _f_: focus
     (setf (alist-get 'google-java-format apheleia-formatters) '("google-java-format" "--aosp" "-"))
     (setf (alist-get 'java-ts-mode apheleia-mode-alist) 'google-java-format)
     ;; kotlin
-    (setf (alist-get 'ktlint apheleia-formatters) '("ktlint" "--format" "--stdin"))
+    (setf (alist-get 'ktlint apheleia-formatters) '("ktlint" "--format" "--log-level=none" "--stdin" "--stdin-path" filepath))
     (setf (alist-get 'kotlin-ts-mode apheleia-mode-alist) 'ktlint)
     ;; prettier (組み込み定義済み、mode-alistのみ)
     (setf (alist-get 'js-ts-mode apheleia-mode-alist) 'prettier)
