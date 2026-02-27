@@ -396,6 +396,23 @@ _C-n_: down
       ("M-l R" . lsp-bridge-rename)
       ("M-l f" . lsp-bridge-format-code)))
     :config
+    ;; ts-mode language server mappings missing from lsp-bridge defaults
+    (dolist (entry '((kotlin-ts-mode . "kotlin-language-server")
+                     (swift-ts-mode . "swift-sourcekit")
+                     (toml-ts-mode . "taplo")
+                     (hcl-ts-mode . "terraform-ls")))
+      (add-to-list 'lsp-bridge-single-lang-server-mode-list entry))
+    ;; ts-mode hooks missing from lsp-bridge defaults
+    ;; (toml-ts-mode-hook is already in the default list)
+    (dolist (hook '(kotlin-ts-mode-hook
+                    swift-ts-mode-hook
+                    hcl-ts-mode-hook))
+      (add-hook hook (lambda ()
+                       (when (cl-every (lambda (pred)
+                                         (lsp-bridge-check-predicate pred "global-lsp-bridge-mode"))
+                                       lsp-bridge-enable-predicates)
+                         (lsp-bridge-mode 1)))))
+
     (leaf acm
       :url "https://github.com/manateelazycat/lsp-bridge"
       :custom
