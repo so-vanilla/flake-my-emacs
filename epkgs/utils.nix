@@ -14,4 +14,6 @@ with epkgs; [
   jinx
   apheleia
   exec-path-from-shell
+  pdf-tools
+  nov
 ]

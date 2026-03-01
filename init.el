@@ -1004,6 +1004,53 @@ _r_: rename              _j_: next           _f_: focus
      ("M-e" . vterm-copy-mode)
      ("M-i" . eat-special-edit-open)))
 
+  (leaf pdf-tools
+    :mode ("\\.pdf\\'" . pdf-view-mode)
+    :config
+    (pdf-tools-install :no-query))
+
+  (leaf nov
+    :mode ("\\.epub\\'" . nov-mode))
+
+  (leaf reader
+    :load-path "~/.emacs.d/lisp"
+    :require t
+    :custom
+    ((reader-frame-parameters . '((width . 90) (height . 50)))
+     (reader-pdf-default-fit . 'fit-page)
+     (reader-pdf-dual-page . nil)
+     (reader-pdf-right-to-left . nil)
+     (reader-pdf-dual-odd-left . t))
+    :bind
+    (("<f4>" . hydra-reader/body))
+    :hydra
+    ((hydra-reader
+      (:hint nil :exit nil)
+      "
+^Navigate^          ^View^           ^Layout^         ^Frame^
+^^--------------------------------------------------------------
+_n_: next page      _+_: zoom in     _d_: dual page   _o_: open
+_p_: prev page      _-_: zoom out    _r_: direction   _q_: close
+_j_: scroll down    _w_: fit width   _e_: odd/even
+_k_: scroll up      _f_: fit page
+_g_: goto page
+"
+      ("n" reader-next-page)
+      ("p" reader-previous-page)
+      ("j" reader-scroll-up)
+      ("k" reader-scroll-down)
+      ("g" reader-goto-page :exit t)
+      ("+" reader-zoom-in)
+      ("-" reader-zoom-out)
+      ("w" reader-fit-width)
+      ("f" reader-fit-page)
+      ("d" reader-toggle-dual-page)
+      ("r" reader-toggle-direction)
+      ("e" reader-toggle-odd-even)
+      ("o" reader-open :exit t)
+      ("q" reader-close :exit t)
+      ("C-m" nil :exit t))))
+
   (leaf eat-special-edit
     :load-path "~/.emacs.d/lisp"
     :require t
@@ -1287,6 +1334,11 @@ org-agendaの \"g\" カスタムビューを適切なウィンドウに表示し
 
       t)
   nil)
+
+(when-darwin
+ (require 'server)
+ (unless (server-running-p)
+   (server-start)))
 
 (provide 'init)
 
