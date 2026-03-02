@@ -327,6 +327,28 @@ Default is current time HH:MM."
     (message "Clocked out at %s on %s" time-str date-str)
     (org-timeblock-display-refresh)))
 
+(defun org-timeblock-worklog-clock-in-date ()
+  "Record clock-in for a specified date and time.
+Prompts for date via `org-read-date', then for time (default now)."
+  (interactive)
+  (let* ((date-str (org-read-date nil nil nil "Clock-in date: "))
+         (default (format-time-string "%H:%M"))
+         (time-str (read-string (format "Clock-in time (%s): " date-str) default)))
+    (org-timeblock-db-clock-in date-str time-str)
+    (message "Clocked in at %s on %s" time-str date-str)
+    (org-timeblock-display-refresh)))
+
+(defun org-timeblock-worklog-clock-out-date ()
+  "Record clock-out for a specified date and time.
+Prompts for date via `org-read-date', then for time (default now)."
+  (interactive)
+  (let* ((date-str (org-read-date nil nil nil "Clock-out date: "))
+         (default (format-time-string "%H:%M"))
+         (time-str (read-string (format "Clock-out time (%s): " date-str) default)))
+    (org-timeblock-db-clock-out date-str time-str)
+    (message "Clocked out at %s on %s" time-str date-str)
+    (org-timeblock-display-refresh)))
+
 ;;; ---- Insert (cursor / region) ----
 
 (defun org-timeblock-worklog-insert ()
@@ -892,6 +914,8 @@ Break is excluded; gaps are attributed to the Other category."
   ;; Global clock-in/out keybindings
   (global-set-key (kbd "C-c i") #'org-timeblock-worklog-clock-in)
   (global-set-key (kbd "C-c o") #'org-timeblock-worklog-clock-out)
+  (global-set-key (kbd "C-c I") #'org-timeblock-worklog-clock-in-date)
+  (global-set-key (kbd "C-c O") #'org-timeblock-worklog-clock-out-date)
 
   (when (require 'hydra nil t)
     (defhydra org-timeblock-display-help (:color blue :hint nil)
