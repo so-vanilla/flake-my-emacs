@@ -1028,9 +1028,11 @@ _r_: rename              _j_: next           _f_: focus
               (funcall setup-fn dir)
             (funcall setup-fn)))))
     (my/workspace-setup-sidebar-and-timeblock)
-    (persp-switch "general"))
+    (persp-switch "general")
+    (persp-kill "main"))
 
-  (add-hook 'emacs-startup-hook #'my/setup-workspaces)
+  (add-hook 'emacs-startup-hook
+            (lambda () (run-with-idle-timer 0.5 nil #'my/setup-workspaces)))
 
   (leaf projectile
     :global-minor-mode t
