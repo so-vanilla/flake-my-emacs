@@ -977,6 +977,61 @@ _r_: rename              _j_: next           _f_: focus
       ("q" nil :exit t)
       ("C-m" nil :exit t))))
 
+  ;; Workspace auto-setup
+  (defun my/workspace-setup-general ()
+    "Set up the general workspace with org-agenda."
+    (let ((org-agenda-window-setup 'current-window))
+      (org-agenda nil "g"))
+    (when (derived-mode-p 'org-agenda-mode)
+      (local-set-key (kbd "q") #'ignore)))
+
+  (defun my/workspace-setup-dired (dir)
+    "Set up a workspace with dired for DIR."
+    (dired dir))
+
+  (defun my/workspace-setup-sidebar-and-timeblock ()
+    "Show aide-persp-sidebar and org-timeblock side windows."
+    (aide-persp-sidebar-show)
+    (org-timeblock-show))
+
+  (defvar my/workspace-configs
+    '((:name "general"
+       :condition t
+       :dir "~/org/"
+       :setup my/workspace-setup-general)
+      (:name "emacs"
+       :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-emacs")
+       :dir "~/repos/github.com/so-vanilla/flake-my-emacs"
+       :setup my/workspace-setup-dired)
+      (:name "claude"
+       :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-claude")
+       :dir "~/repos/github.com/so-vanilla/flake-my-claude"
+       :setup my/workspace-setup-dired)
+      (:name "work"
+       :condition t
+       :dir "~/"
+       :setup my/workspace-setup-dired))
+    "List of workspace configurations for auto-setup.")
+
+  (defun my/setup-workspaces ()
+    "Set up all workspaces defined in `my/workspace-configs'."
+    (interactive)
+    (dolist (config my/workspace-configs)
+      (let ((name (plist-get config :name))
+            (condition (plist-get config :condition))
+            (dir (plist-get config :dir))
+            (setup-fn (plist-get config :setup)))
+        (when (eval condition)
+          (persp-switch name)
+          (delete-other-windows)
+          (if (eq setup-fn 'my/workspace-setup-dired)
+              (funcall setup-fn dir)
+            (funcall setup-fn)))))
+    (my/workspace-setup-sidebar-and-timeblock)
+    (persp-switch "general"))
+
+  (add-hook 'emacs-startup-hook #'my/setup-workspaces)
+
   (leaf projectile
     :global-minor-mode t
     :bind
