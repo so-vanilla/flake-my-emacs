@@ -16,6 +16,8 @@
         t
       nil)))
 
+(load (expand-file-name "private.el" user-emacs-directory) t)
+
 (when-darwin
  (setq mac-option-modifier 'super
        mac-command-modifier 'meta
@@ -83,21 +85,21 @@
 					                   :noquery t))
       (process-send-string copy-process text)
       (process-send-eof copy-process))
-    
+
     (defun my/clipboard-paste-wayland ()
       (if (and copy-process (process-live-p copy-process))
 	      nil
 	    (shell-command-to-string "wl-paste -n | tr -d \\r")))
-    
+
     (defun my/clipboard-copy-darwin (text)
       (let ((process-connection-type nil))
         (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
           (process-send-string proc text)
           (process-send-eof proc))))
-    
+
     (defun my/clipboard-paste-darwin ()
       (shell-command-to-string "pbpaste"))
-    
+
     (defun my-move-beginning-of-line ()
       "Move point to first non-whitespace character or beginning-of-line."
       (interactive "^")
@@ -105,12 +107,12 @@
 	    (back-to-indentation)
 	    (when (= orig-point (point))
 	      (move-beginning-of-line 1))))
-    
+
     (defun my-undo ()
       (interactive)
       (undo)
       (hydra-undo/body))
-    
+
     (defun my-redo ()
       (interactive)
       (undo-redo)
@@ -146,12 +148,34 @@ _r_: redo
 
   (leaf faces
     :tag "builtin"
+    :preface
+    (defun my/compute-font-height (&optional frame)
+      "フレームが表示されているモニターのDPIに基づいてフォントサイズを決定する。"
+      (let* ((attrs (frame-monitor-attributes frame))
+             (geometry (alist-get 'geometry attrs))
+             (mm-size (alist-get 'mm-size attrs))
+             (px-w (nth 2 geometry))
+             (mm-w (nth 0 mm-size))
+             (dpi (if (and mm-w (> mm-w 0))
+                      (/ (* (float px-w) 25.4) mm-w)
+                    96.0)))
+        (cond
+         ((> dpi 192) 74)   ; 4K/HiDPI (e.g. 224dpi)
+         ((> dpi 144) 90)   ; Retina相当
+         ((> dpi 120) 82)   ; やや高DPI
+         (t 100))))          ; 標準
+    (defun my/adjust-font-for-frame (&optional frame)
+      "フレームが表示されているモニターに合わせてフォントサイズを調整する。"
+      (set-face-attribute 'default frame
+                          :height (my/compute-font-height frame)))
     :config
     (set-face-attribute 'default nil
                         :family "DejaVuSansM Nerd Font Mono"
-		                :height 100
-		                :weight 'normal
-		                :width 'normal))
+                        :height (my/compute-font-height)
+                        :weight 'normal
+                        :width 'normal)
+    (add-hook 'after-make-frame-functions #'my/adjust-font-for-frame)
+    (add-hook 'move-frame-functions #'my/adjust-font-for-frame))
 
   (leaf warning
     :tag "builtin"
@@ -429,7 +453,7 @@ _C-n_: down
         ("M-." . nil)
         ("M-H" . nil)
         ("M-h" . nil))))
-    
+
     (leaf yasnipet
       :url "https://github.com/joaotavora/yasnippet"
       :global-minor-mode yas-global-mode)))
@@ -688,7 +712,6 @@ _r_: random  _d_: date(goto)      _n_: tomorrow(goto)
       (setq org-caldav-calendars
             `((:calendar-id "67B2-67412200-1A7-7F1B4200" :files (,todo) :inbox ,todo)
               (:calendar-id "11D3-67412200-21D-48611280" :files (,sched) :inbox ,sched))))
-    (setq org-caldav-url (getenv "CALDAV_LINK"))
     (defun my/org-caldav-sync (&optional silent)
       "org-caldav-sync with unsaved buffer check.
 SILENT non-nil skips prompt and aborts if unsaved."
@@ -874,7 +897,7 @@ SILENT non-nil skips prompt and aborts if unsaved."
     (leaf yaml-ts-mode
       :tag "builtin"
       :mode "\\.ya?ml\\'"))
-  
+
   (leaf cc-mode
     :tag "builtin"
     :custom
@@ -896,7 +919,7 @@ SILENT non-nil skips prompt and aborts if unsaved."
   (leaf elisp-mode
     :tag "builtin")
 
-)
+  )
 
 (leaf *ai-assistant
   :config
@@ -911,7 +934,7 @@ SILENT non-nil skips prompt and aborts if unsaved."
 
   (leaf copilot-chat
     :url "https://github.com/chep/copilot-chat.el")
-  
+
   (if (file-exists-p "~/repos/github.com/manzaltu/claude-code-ide.el/")
       (progn
         (add-to-list 'load-path "~/repos/github.com/manzaltu/claude-code-ide.el")
@@ -1167,7 +1190,7 @@ _g_: goto page
     (eat-mode-map
      ("M-e" . eat-toggle-mode)
      ("M-i" . eat-special-edit-open)))
-  
+
   (leaf jinx
     :url "https://github.com/minad/jinx"
     :global-minor-mode global-jinx-mode
