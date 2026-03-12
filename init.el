@@ -174,6 +174,16 @@ _r_: redo
                         :height (my/compute-font-height)
                         :weight 'normal
                         :width 'normal)
+    (dolist (target '(japanese-jisx0208
+                      japanese-jisx0213.2004-1
+                      japanese-jisx0213-2
+                      katakana-jisx0201))
+      (set-fontset-font t target (font-spec :family "Noto Sans Mono CJK JP")))
+    (set-fontset-font t '(#x2300 . #x23FF) (font-spec :family "Noto Sans Mono"))
+    (dolist (target '(symbol unicode))
+      (set-fontset-font t target (font-spec :family "Noto Sans Mono") nil 'append))
+    (add-to-list 'face-font-rescale-alist '("Noto Sans Mono CJK JP" . 1.0))
+    (add-to-list 'face-font-rescale-alist '("Noto Sans Mono" . 1.0))
     (add-hook 'after-make-frame-functions #'my/adjust-font-for-frame)
     (add-hook 'move-frame-functions #'my/adjust-font-for-frame))
 
@@ -1019,21 +1029,21 @@ _r_: rename              _j_: next           _f_: focus
 
   (defvar my/workspace-configs
     '((:name "general"
-       :condition t
-       :dir "~/org/"
-       :setup my/workspace-setup-general)
+             :condition t
+             :dir "~/org/"
+             :setup my/workspace-setup-general)
       (:name "emacs"
-       :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-emacs")
-       :dir "~/repos/github.com/so-vanilla/flake-my-emacs"
-       :setup my/workspace-setup-dired)
+             :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-emacs")
+             :dir "~/repos/github.com/so-vanilla/flake-my-emacs"
+             :setup my/workspace-setup-dired)
       (:name "claude"
-       :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-claude")
-       :dir "~/repos/github.com/so-vanilla/flake-my-claude"
-       :setup my/workspace-setup-dired)
+             :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-claude")
+             :dir "~/repos/github.com/so-vanilla/flake-my-claude"
+             :setup my/workspace-setup-dired)
       (:name "work"
-       :condition t
-       :dir "~/"
-       :setup my/workspace-setup-dired))
+             :condition t
+             :dir "~/"
+             :setup my/workspace-setup-dired))
     "List of workspace configurations for auto-setup.")
 
   (defun my/setup-workspaces ()
@@ -1166,17 +1176,9 @@ _g_: goto page
   (leaf eat
     :url "https://codeberg.org/akib/emacs-eat"
     :hook
-    ((eshell-first-time-mode-hook . eat-eshell-visual-command-mode))
+    ((eshell-load-hook . eat-eshell-mode))
     :custom
     ((eat-enable-auto-line-mode . t))
-    :init
-    (defun eat-toggle-mode ()
-      "Toggle eat-mode."
-      (interactive)
-      (if eat--semi-char-mode
-          (eat-emacs-mode)
-        (eat-semi-char-mode)))
-
     :config
     (customize-set-variable
      'eat-semi-char-non-bound-keys
