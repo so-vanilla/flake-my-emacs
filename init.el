@@ -1211,6 +1211,103 @@ _g_: goto page
     :bind
     (("<f3>" . org-timeblock-toggle)))
 
+  (leaf eshell
+    :tag "builtin"
+    :custom
+    ((eshell-history-size . 1024)
+     (eshell-buffer-maximum-lines . 10000)
+     (eshell-hist-ignoredups . t)
+     (eshell-destroy-buffer-when-process-dies . t))
+    :hook
+    ((eshell-mode-hook . my/eshell-setup-capf)
+     (eshell-mode-hook . my/eshell-setup-aliases)
+     (eshell-mode-hook . my/eshell-setup-keybinds))
+    :config
+    ;; ACM capf backend for eshell
+    (add-to-list 'acm-backend-capf-mode-list 'eshell-mode)
+
+    ;; capf: pcomplete (eshell default) + cape-file
+    (defun my/eshell-setup-capf ()
+      (setq-local completion-at-point-functions
+                  (list #'pcomplete-completions-at-point
+                        #'cape-file)))
+
+    ;; consult-history on M-r
+    (defun my/eshell-setup-keybinds ()
+      (keymap-set eshell-hist-mode-map "M-r" #'consult-history))
+
+    ;; Aliases (fish abbr equivalent)
+    (defun my/eshell-setup-aliases ()
+      (eshell/alias "ls" "eza $*")
+      (eshell/alias "cat" "bat $*")
+      (eshell/alias "grep" "rg $*")
+      (eshell/alias "h" "cd $1")
+      (eshell/alias "q" "exit"))
+
+    ;; Override eshell/rm to use trash-put
+    (defun eshell/rm (&rest args)
+      "Use trash-put instead of rm."
+      (let ((args (flatten-tree args)))
+        (dolist (arg args)
+          (eshell-command-result (format "trash-put %s" (eshell-quote-argument arg))))))
+
+    ;; Environment variables (same as fish interactiveShellInit)
+    (let ((python-home (string-trim (shell-command-to-string
+                                     "python3 -c 'import sys; print(sys.prefix, end=\"\")' 2>/dev/null"))))
+      (when (and (not (string-empty-p python-home))
+                 (file-directory-p python-home))
+        (setenv "PYTHON_HOME" python-home)))
+    (let ((gh-token (string-trim (shell-command-to-string "gh auth token 2>/dev/null"))))
+      (when (and (not (string-empty-p gh-token))
+                 (not (string-match-p "error" gh-token)))
+        (setenv "GITHUB_PERSONAL_ACCESS_TOKEN" gh-token)))
+    (setenv "HM_USERNAME" (system-name))
+    (setenv "HM_GIT_EMAIL"
+            (string-trim (shell-command-to-string "git config user.email")))
+
+    ;; PATH additions
+    (dolist (dir '("~/.local/bin" "/opt/homebrew/bin" "~/.rd/bin"))
+      (let ((expanded (expand-file-name dir)))
+        (when (file-directory-p expanded)
+          (setenv "PATH" (concat expanded ":" (getenv "PATH")))
+          (add-to-list 'exec-path expanded))))
+
+    ;; Pure-style two-line prompt
+    (defun my/eshell-prompt ()
+      "Pure-style two-line prompt."
+      (let* ((dir (abbreviate-file-name (eshell/pwd)))
+             (branch (when (executable-find "git")
+                       (string-trim (shell-command-to-string
+                                     "git symbolic-ref --short HEAD 2>/dev/null"))))
+             (nix-shell (getenv "IN_NIX_SHELL"))
+             (aws-profile (getenv "AWS_PROFILE"))
+             (venv (getenv "VIRTUAL_ENV"))
+             (indicators
+              (string-join
+               (delq nil
+                     (list
+                      (when nix-shell "nix")
+                      (when aws-profile (format "aws:%s" aws-profile))
+                      (when venv (format "py:%s" (file-name-nondirectory venv)))))
+               " ")))
+        (concat
+         (propertize dir 'face 'font-lock-constant-face)
+         (when (and branch (not (string-empty-p branch)))
+           (concat " " (propertize branch 'face 'font-lock-function-name-face)))
+         "\n"
+         (unless (string-empty-p indicators)
+           (concat (propertize (format "[%s] " indicators) 'face 'font-lock-comment-face)))
+         (propertize "❯" 'face (if (= (user-uid) 0) 'error 'success))
+         " ")))
+
+    (setq eshell-prompt-function #'my/eshell-prompt)
+    (setq eshell-prompt-regexp "^[^❯]*❯ "))
+
+  (leaf eshell-syntax-highlighting
+    :url "https://github.com/akreisher/eshell-syntax-highlighting"
+    :hook
+    ((eshell-mode-hook . eshell-syntax-highlighting-mode)))
+
   (leaf eat
     :url "https://codeberg.org/akib/emacs-eat"
     :hook

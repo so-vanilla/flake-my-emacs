@@ -10,6 +10,7 @@ with epkgs; [
   ace-window
   mistty
   eat
+  eshell-syntax-highlighting
   vterm
   jinx
   apheleia
