@@ -563,7 +563,45 @@ _r_: row(table)
      (org-agenda-span . 'day)
      (org-agenda-skip-deadline-if-done . nil)
      (org-agenda-skip-schedule-if-done . nil)
-     (org-agenda-skip-deadline-prewarning-if-scheduled . nil)))
+     (org-agenda-skip-deadline-prewarning-if-scheduled . nil)
+     (org-log-done . 'time))
+    :hook
+    ((org-agenda-finalize-hook . my/org-agenda-add-deadline-info))
+    :preface
+    (defun my/org-agenda-add-deadline-info ()
+      "Add deadline/closed info to todo entries in agenda buffer."
+      (when (derived-mode-p 'org-agenda-mode)
+        (save-excursion
+          (goto-char (point-min))
+          (while (not (eobp))
+            (let ((marker (get-text-property (point) 'org-marker))
+                  (type (get-text-property (point) 'type)))
+              (when (and marker (string-match-p "todo" (or type "")))
+                (let* ((deadline (org-entry-get marker "DEADLINE"))
+                       (closed (org-entry-get marker "CLOSED"))
+                       (info
+                        (cond
+                         (closed
+                          (let* ((ct (org-time-string-to-time closed))
+                                 (formatted (format-time-string "%m/%d" ct)))
+                            (format "[Done:%s] " formatted)))
+                         (deadline
+                          (let* ((dt (org-time-string-to-time deadline))
+                                 (now (current-time))
+                                 (diff (floor (/ (float-time (time-subtract dt now)) 86400)))
+                                 (date-str (format-time-string "%m/%d" dt)))
+                            (format "[%s %+dd] " date-str diff)))
+                         (t nil))))
+                  (when info
+                    (let ((inhibit-read-only t))
+                      (end-of-line)
+                      (let ((eol (point)))
+                        (beginning-of-line)
+                        (if (re-search-forward "\\([ \t]+\\)\\(:[a-zA-Z0-9_@:]+:\\)\\s-*$" eol t)
+                            (goto-char (match-beginning 1))
+                          (goto-char eol)))
+                      (insert info))))))
+            (forward-line 1))))))
 
   (leaf org-super-agenda
     :url "https://github.com/alphapapa/org-super-agenda"
