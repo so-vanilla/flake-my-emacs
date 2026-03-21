@@ -1365,8 +1365,6 @@ _g_: goto page
 
   (leaf ddskk
     :url "https://github.com/skk-dev/ddskk"
-    ;; 会社環境(macOS)でのみ使用。個人環境(vanilla)ではfcitx5を使用
-    :if (not is-private-host)
     :custom
     ((skk-preload . t)
      (skk-user-directory . "~/.ddskk")
@@ -1552,10 +1550,9 @@ org-agendaの \"g\" カスタムビューを適切なウィンドウに表示し
       t)
   nil)
 
-(when-darwin
- (require 'server)
- (unless (server-running-p)
-   (server-start)))
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 
 (provide 'init)
 
