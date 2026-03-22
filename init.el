@@ -1077,7 +1077,6 @@ SILENT non-nil skips prompt and aborts if unsaved."
 (leaf *others
   :config
   (leaf claude-code-utils-session-status
-    :after claude-code-ide
     :require t
     :global-minor-mode claude-code-utils-session-status-mode)
 
@@ -1091,21 +1090,21 @@ SILENT non-nil skips prompt and aborts if unsaved."
      (persp-utils-terminal-function . 'eshell)
      (persp-utils-workspace-templates
       . '((:name "general" :dir "~/org/"
-           :setup (lambda (&optional _dir)
-                    (let ((org-agenda-window-setup 'current-window))
-                      (org-agenda nil "g"))
-                    (when (derived-mode-p 'org-agenda-mode)
-                      (local-set-key (kbd "q") #'ignore))))
+                 :setup (lambda (&optional _dir)
+                          (let ((org-agenda-window-setup 'current-window))
+                            (org-agenda nil "g"))
+                          (when (derived-mode-p 'org-agenda-mode)
+                            (local-set-key (kbd "q") #'ignore))))
           (:name "emacs"
-           :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-emacs")
-           :dir "~/repos/github.com/so-vanilla/flake-my-emacs"
-           :setup (lambda (&optional dir) (dired (or dir default-directory))))
+                 :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-emacs")
+                 :dir "~/repos/github.com/so-vanilla/flake-my-emacs"
+                 :setup (lambda (&optional dir) (dired (or dir default-directory))))
           (:name "claude"
-           :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-claude")
-           :dir "~/repos/github.com/so-vanilla/flake-my-claude"
-           :setup (lambda (&optional dir) (dired (or dir default-directory))))
+                 :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-claude")
+                 :dir "~/repos/github.com/so-vanilla/flake-my-claude"
+                 :setup (lambda (&optional dir) (dired (or dir default-directory))))
           (:name "work" :dir "~/"
-           :setup (lambda (&optional dir) (dired (or dir default-directory)))))))
+                 :setup (lambda (&optional dir) (dired (or dir default-directory)))))))
     :config
     (with-eval-after-load 'claude-code-utils-session-status
       (add-hook 'claude-code-utils-session-status--change-hook
@@ -1115,8 +1114,7 @@ SILENT non-nil skips prompt and aborts if unsaved."
                 #'claude-code-utils-session-status--scan-directory))
     (add-hook 'persp-utils-workspace-post-setup-hook
               (lambda ()
-                (persp-utils-sidebar-show)
-                (org-timeblock-show))))
+                (sidebar-utils-global-show 'left-panel))))
 
   (leaf perspective
     :url "https://github.com/nex3/perspective-el"
@@ -1261,6 +1259,26 @@ _g_: goto page
                    (window-parameters . ((no-delete-other-windows . t)))))
     :bind
     (("<f3>" . org-timeblock-toggle)))
+
+  (leaf sidebar-utils
+    :load-path "~/.emacs.d/lisp"
+    :require t
+    :config
+    (sidebar-utils-define
+     :id 'left-panel
+     :protected t
+     :components
+     (list (list :id 'persp-sidebar
+                 :buffer "*Persp Utils Sidebar*"
+                 :show-fn #'persp-utils-sidebar--ensure-displayed
+                 :hide-fn #'persp-utils-sidebar-close
+                 :ratio 1/3)
+           (list :id 'org-timeblock
+                 :buffer "*Org Timeblock*"
+                 :show-fn #'org-timeblock-show
+                 :hide-fn #'org-timeblock-close
+                 :ratio 2/3)))
+    (sidebar-utils-mode 1))
 
   (leaf eshell
     :tag "builtin"
