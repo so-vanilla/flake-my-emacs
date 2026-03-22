@@ -1174,12 +1174,10 @@ _o_: open project        _k_: previous       _q_: quit
     :config
     (customize-set-variable
      'vterm-keymap-exceptions
-     (append '("M-j" "M-k" "M-m" "M-c" "M-:")
+     (append '("M-j" "M-k" "M-m" "M-c" "M-:" "M-e" "M-i")
              vterm-keymap-exceptions))
-    :bind
-    (vterm-mode-map
-     ("M-e" . vterm-copy-mode)
-     ("M-i" . eat-special-edit-open)))
+    (define-key vterm-mode-map (kbd "M-e") #'vterm-copy-mode)
+    (define-key vterm-mode-map (kbd "M-i") #'eat-special-edit-open))
 
   (leaf pdf-tools
     :mode ("\\.pdf\\'" . pdf-view-mode)
