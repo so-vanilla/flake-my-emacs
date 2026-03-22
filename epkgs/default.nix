@@ -17,7 +17,6 @@ import ./leaf.nix { inherit epkgs; }
 ++ import ./utils.nix { inherit epkgs; }
 ++ import ./appearance.nix { inherit epkgs; }
 ++ [
-  extraPkgs.aide-modeline
-  extraPkgs.aide-session-status
-  extraPkgs.aide-persp-side-bar
+  extraPkgs.claude-code-utils
+  extraPkgs.persp-utils
 ]

@@ -8,8 +8,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
-    aide = {
-      url = "github:so-vanilla/aide";
+    claude-code-utils = {
+      url = "github:so-vanilla/claude-code-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+    persp-utils = {
+      url = "github:so-vanilla/persp-utils";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
@@ -25,9 +30,8 @@
           overlays = [ (import inputs.emacs-overlay) ];
         };
         extraPkgs = {
-          aide-modeline = inputs.aide.packages.${system}.aide-modeline;
-          aide-session-status = inputs.aide.packages.${system}.aide-session-status;
-          aide-persp-side-bar = inputs.aide.packages.${system}.aide-persp-sidebar;
+          claude-code-utils = inputs.claude-code-utils.packages.${system}.claude-code-utils;
+          persp-utils = inputs.persp-utils.packages.${system}.persp-utils;
         };
         mkEmacsclientApp =
           finalPackage:

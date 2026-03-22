@@ -1050,25 +1050,54 @@ SILENT non-nil skips prompt and aborts if unsaved."
           ((claude-code-ide-terminal-backend . 'vterm)
            (claude-code-ide-cli-extra-flags . "--dangerously-skip-permissions"))
           :bind (("M-c" . claude-code-ide-menu)))
-        (leaf aide-modeline
+        (leaf claude-code-utils-modeline
           :after claude-code-ide
           :require t
-          :global-minor-mode aide-modeline-mode))))
+          :global-minor-mode claude-code-utils-modeline-mode))))
 
 (leaf *others
   :config
-  (leaf aide-session-status
+  (leaf claude-code-utils-session-status
     :after claude-code-ide
     :require t
-    :global-minor-mode aide-session-status-mode)
+    :global-minor-mode claude-code-utils-session-status-mode)
 
-  (leaf aide-persp-sidebar
+  (leaf persp-utils
     :require t
+    :custom
+    ((persp-utils-sidebar-session-status-function . 'claude-code-utils-session-status-format)
+     (persp-utils-workspace-auto-setup-on-startup . t)
+     (persp-utils-workspace-default-perspective . "general")
+     (persp-utils-workspace-kill-initial-perspective . "main")
+     (persp-utils-terminal-function . 'eshell)
+     (persp-utils-workspace-templates
+      . '((:name "general" :dir "~/org/"
+           :setup (lambda (&optional _dir)
+                    (let ((org-agenda-window-setup 'current-window))
+                      (org-agenda nil "g"))
+                    (when (derived-mode-p 'org-agenda-mode)
+                      (local-set-key (kbd "q") #'ignore))))
+          (:name "emacs"
+           :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-emacs")
+           :dir "~/repos/github.com/so-vanilla/flake-my-emacs"
+           :setup (lambda (&optional dir) (dired (or dir default-directory))))
+          (:name "claude"
+           :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-claude")
+           :dir "~/repos/github.com/so-vanilla/flake-my-claude"
+           :setup (lambda (&optional dir) (dired (or dir default-directory))))
+          (:name "work" :dir "~/"
+           :setup (lambda (&optional dir) (dired (or dir default-directory)))))))
     :config
-    (add-to-list 'display-buffer-alist
-                 '("\\*Aide Persp Sidebar\\*"
-                   nil
-                   (window-parameters . ((no-delete-other-windows . t))))))
+    (with-eval-after-load 'claude-code-utils-session-status
+      (add-hook 'claude-code-utils-session-status--change-hook
+                (lambda ()
+                  (run-with-idle-timer 0.1 nil #'persp-utils-sidebar-refresh)))
+      (add-hook 'persp-utils-sidebar-refresh-hook
+                #'claude-code-utils-session-status--scan-directory))
+    (add-hook 'persp-utils-workspace-post-setup-hook
+              (lambda ()
+                (persp-utils-sidebar-show)
+                (org-timeblock-show))))
 
   (leaf perspective
     :url "https://github.com/nex3/perspective-el"
@@ -1100,68 +1129,11 @@ _r_: rename              _j_: next           _f_: focus
       ("p" persp-prev)
       ("j" persp-next)
       ("p" persp-prev)
-      ("s" aide-persp-sidebar-show :exit t)
-      ("t" aide-persp-sidebar-toggle :exit t)
-      ("f" aide-persp-sidebar-focus :exit t)
+      ("s" persp-utils-sidebar-show :exit t)
+      ("t" persp-utils-sidebar-toggle :exit t)
+      ("f" persp-utils-sidebar-focus :exit t)
       ("q" nil :exit t)
       ("C-m" nil :exit t))))
-
-  ;; Workspace auto-setup
-  (defun my/workspace-setup-general ()
-    "Set up the general workspace with org-agenda."
-    (let ((org-agenda-window-setup 'current-window))
-      (org-agenda nil "g"))
-    (when (derived-mode-p 'org-agenda-mode)
-      (local-set-key (kbd "q") #'ignore)))
-
-  (defun my/workspace-setup-dired (dir)
-    "Set up a workspace with dired for DIR."
-    (dired dir))
-
-  (defun my/workspace-setup-sidebar-and-timeblock ()
-    "Show aide-persp-sidebar and org-timeblock side windows."
-    (aide-persp-sidebar-show)
-    (org-timeblock-show))
-
-  (defvar my/workspace-configs
-    '((:name "general"
-             :condition t
-             :dir "~/org/"
-             :setup my/workspace-setup-general)
-      (:name "emacs"
-             :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-emacs")
-             :dir "~/repos/github.com/so-vanilla/flake-my-emacs"
-             :setup my/workspace-setup-dired)
-      (:name "claude"
-             :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-claude")
-             :dir "~/repos/github.com/so-vanilla/flake-my-claude"
-             :setup my/workspace-setup-dired)
-      (:name "work"
-             :condition t
-             :dir "~/"
-             :setup my/workspace-setup-dired))
-    "List of workspace configurations for auto-setup.")
-
-  (defun my/setup-workspaces ()
-    "Set up all workspaces defined in `my/workspace-configs'."
-    (interactive)
-    (dolist (config my/workspace-configs)
-      (let ((name (plist-get config :name))
-            (condition (plist-get config :condition))
-            (dir (plist-get config :dir))
-            (setup-fn (plist-get config :setup)))
-        (when (eval condition)
-          (persp-switch name)
-          (delete-other-windows)
-          (if (eq setup-fn 'my/workspace-setup-dired)
-              (funcall setup-fn dir)
-            (funcall setup-fn)))))
-    (my/workspace-setup-sidebar-and-timeblock)
-    (persp-switch "general")
-    (persp-kill "main"))
-
-  (add-hook 'emacs-startup-hook
-            (lambda () (run-with-idle-timer 0.5 nil #'my/setup-workspaces)))
 
   (leaf projectile
     :global-minor-mode t

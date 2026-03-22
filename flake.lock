@@ -1,6 +1,6 @@
 {
   "nodes": {
-    "aide": {
+    "claude-code-utils": {
       "inputs": {
         "flake-utils": [
           "flake-utils"
@@ -10,16 +10,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1771165498,
-        "narHash": "sha256-BkzSZdlhLpbf6zLhGKvmMgSbCnrEy5Du6oxR1gwJzqI=",
+        "lastModified": 1774162548,
+        "narHash": "sha256-jKoRwblcAwVdb6qUzUOlc2jLLTxUJ8WakmVPTYDy8Mw=",
         "owner": "so-vanilla",
-        "repo": "aide",
-        "rev": "722a73d0601815b9221782acde2e2c0bf2d9359b",
+        "repo": "claude-code-utils",
+        "rev": "33b5346e5bea2e450d29705ecb4ef3a1ef350e98",
         "type": "github"
       },
       "original": {
         "owner": "so-vanilla",
-        "repo": "aide",
+        "repo": "claude-code-utils",
         "type": "github"
       }
     },
@@ -94,12 +94,36 @@
         "type": "github"
       }
     },
+    "persp-utils": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774160364,
+        "narHash": "sha256-Yl5QAS+kGs+wJHR6I/Ir6Al4x+BOUnFAewxM5R0RrX0=",
+        "owner": "so-vanilla",
+        "repo": "persp-utils",
+        "rev": "0db4f4da942d88fd89e0add3bb846bfb2a1a986d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "so-vanilla",
+        "repo": "persp-utils",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
-        "aide": "aide",
+        "claude-code-utils": "claude-code-utils",
         "emacs-overlay": "emacs-overlay",
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "persp-utils": "persp-utils"
       }
     },
     "systems": {
