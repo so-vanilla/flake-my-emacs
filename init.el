@@ -366,7 +366,65 @@ _C-n_: down
     :url "https://github.com/magit/magit"
     :config
     (leaf forge
-      :after magit)))
+      :after magit))
+
+  (leaf smerge-mode
+    :tag "builtin"
+    :preface
+    (defun my/smerge-keep-upper-all ()
+      "Keep upper for all conflicts in the buffer."
+      (interactive)
+      (save-excursion
+        (goto-char (point-min))
+        (let ((count 0))
+          (condition-case nil
+              (while t
+                (smerge-next)
+                (smerge-keep-upper)
+                (cl-incf count))
+            (error nil))
+          (message "Resolved %d conflicts with upper" count))))
+    (defun my/smerge-keep-lower-all ()
+      "Keep lower for all conflicts in the buffer."
+      (interactive)
+      (save-excursion
+        (goto-char (point-min))
+        (let ((count 0))
+          (condition-case nil
+              (while t
+                (smerge-next)
+                (smerge-keep-lower)
+                (cl-incf count))
+            (error nil))
+          (message "Resolved %d conflicts with lower" count))))
+    :hydra
+    ((hydra-smerge
+      (:hint nil)
+      "
+^Move^          ^Keep^              ^All^               ^Other^
+^^--------------^^------------------^^------------------^^-----------
+_n_: next       _u_: upper (mine)   _U_: upper all      _e_: ediff
+_p_: prev       _l_: lower (other)  _L_: lower all      _r_: resolve
+^^              _b_: base           ^^                  _R_: refine
+^^              _a_: all            ^^                  _c_: combine
+^^              _RET_: current"
+      ("n" smerge-next)
+      ("p" smerge-prev)
+      ("u" smerge-keep-upper)
+      ("l" smerge-keep-lower)
+      ("b" smerge-keep-base)
+      ("a" smerge-keep-all)
+      ("RET" smerge-keep-current)
+      ("U" my/smerge-keep-upper-all :exit t)
+      ("L" my/smerge-keep-lower-all :exit t)
+      ("e" smerge-ediff :exit t)
+      ("r" smerge-resolve)
+      ("R" smerge-refine)
+      ("c" smerge-combine-with-next)
+      ("q" nil :exit t)))
+    :config
+    (setcdr smerge-mode-map nil)
+    (define-key smerge-mode-map (kbd "C-c ^") #'hydra-smerge/body)))
 
 (leaf *minibuffer
   :config
