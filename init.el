@@ -1102,7 +1102,8 @@ SILENT non-nil skips prompt and aborts if unsaved."
   (leaf perspective
     :url "https://github.com/nex3/perspective-el"
     :custom
-    ((persp-suppress-no-prefix-key-warning . t))
+    ((persp-suppress-no-prefix-key-warning . t)
+     (persp-show-modestring . nil))
     :init
     (persp-mode)
 
@@ -1120,11 +1121,12 @@ SILENT non-nil skips prompt and aborts if unsaved."
 _c_: create              _n_: next           _s_: show
 _k_: kill                _p_: previous       _t_: toggle
 _r_: rename              _j_: next           _f_: focus
-^ ^                      _k_: previous       _q_: quit
+_o_: open project        _k_: previous       _q_: quit
 "
       ("c" persp-switch)
       ("k" persp-kill)
       ("r" persp-rename)
+      ("o" persp-utils-project-ghq :exit t)
       ("n" persp-next)
       ("p" persp-prev)
       ("j" persp-next)
