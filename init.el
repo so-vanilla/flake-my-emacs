@@ -237,6 +237,10 @@ _r_: redo
     :tag "builtin"
     :global-minor-mode global-auto-revert-mode)
 
+  (leaf editorconfig
+    :tag "builtin"
+    :global-minor-mode editorconfig-mode)
+
   (leaf delsel
     :tag "builtin"
     :global-minor-mode delete-selection-mode)
@@ -334,7 +338,22 @@ _s_: splice     _}_: barf-forward
       ("[" puni-slurp-backward)
       ("{" puni-barf-backward)
       ("C-m" nil :exit t)
-      ("q" nil :exit t)))))
+      ("q" nil :exit t))))
+
+  (leaf rainbow-delimiters
+    :url "https://github.com/Fanael/rainbow-delimiters"
+    :hook
+    ((prog-mode-hook . rainbow-delimiters-mode))
+    :config
+    (set-face-foreground 'rainbow-delimiters-depth-1-face (catppuccin-get-color 'red))
+    (set-face-foreground 'rainbow-delimiters-depth-2-face (catppuccin-get-color 'peach))
+    (set-face-foreground 'rainbow-delimiters-depth-3-face (catppuccin-get-color 'yellow))
+    (set-face-foreground 'rainbow-delimiters-depth-4-face (catppuccin-get-color 'green))
+    (set-face-foreground 'rainbow-delimiters-depth-5-face (catppuccin-get-color 'sapphire))
+    (set-face-foreground 'rainbow-delimiters-depth-6-face (catppuccin-get-color 'lavender))
+    (set-face-foreground 'rainbow-delimiters-depth-7-face (catppuccin-get-color 'mauve))
+    (set-face-foreground 'rainbow-delimiters-depth-8-face (catppuccin-get-color 'pink))
+    (set-face-foreground 'rainbow-delimiters-depth-9-face (catppuccin-get-color 'flamingo))))
 
 (leaf *window
   :config
@@ -1505,7 +1524,16 @@ _g_: goto page
     :url "https://github.com/dp12/parrot"
     :global-minor-mode t
     :custom
-    ((parrot-num-rotations . nil))))
+    ((parrot-num-rotations . nil)))
+
+  (leaf indent-bars
+    :url "https://github.com/jdtsmith/indent-bars"
+    :hook
+    ((prog-mode-hook . indent-bars-mode))
+    :custom
+    ((indent-bars-color . `(:face default :blend 0.15))
+     (indent-bars-highlight-current-depth . `(:blend 0.5 :face default))
+     (indent-bars-treesit-support . t))))
 
 (if is-private-host
     (progn

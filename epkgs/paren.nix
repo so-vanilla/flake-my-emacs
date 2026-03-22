@@ -3,4 +3,5 @@
 }:
 with epkgs; [
   puni
+  rainbow-delimiters
 ]

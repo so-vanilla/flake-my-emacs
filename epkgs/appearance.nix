@@ -8,4 +8,5 @@ with epkgs; [
   org-modern
   nyan-mode
   parrot
+  indent-bars
 ]
