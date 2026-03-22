@@ -10,11 +10,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1774162548,
-        "narHash": "sha256-jKoRwblcAwVdb6qUzUOlc2jLLTxUJ8WakmVPTYDy8Mw=",
+        "lastModified": 1774163079,
+        "narHash": "sha256-1lgF6t7efCJofH3fEFpvEcMNPTFq2zOzPyNrBWUY0dU=",
         "owner": "so-vanilla",
         "repo": "claude-code-utils",
-        "rev": "33b5346e5bea2e450d29705ecb4ef3a1ef350e98",
+        "rev": "5cf7604f163ac1c0e5d8a094d765bfe0d94d1cba",
         "type": "github"
       },
       "original": {

@@ -1050,10 +1050,10 @@ SILENT non-nil skips prompt and aborts if unsaved."
           ((claude-code-ide-terminal-backend . 'vterm)
            (claude-code-ide-cli-extra-flags . "--dangerously-skip-permissions"))
           :bind (("M-c" . claude-code-ide-menu)))
-        (leaf claude-code-utils-modeline
+        (leaf claude-code-ide-modeline
           :after claude-code-ide
           :require t
-          :global-minor-mode claude-code-utils-modeline-mode))))
+          :global-minor-mode claude-code-ide-modeline-mode))))
 
 (leaf *others
   :config
