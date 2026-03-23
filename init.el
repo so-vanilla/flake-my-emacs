@@ -1328,7 +1328,7 @@ _g_: goto page
       (when (and (not (string-empty-p gh-token))
                  (not (string-match-p "error" gh-token)))
         (setenv "GITHUB_PERSONAL_ACCESS_TOKEN" gh-token)))
-    (setenv "HM_USERNAME" (system-name))
+    (setenv "HM_USERNAME" (user-login-name))
     (setenv "HM_GIT_EMAIL"
             (string-trim (shell-command-to-string "git config user.email")))
 
