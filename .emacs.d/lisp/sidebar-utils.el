@@ -25,12 +25,12 @@ PLIST keys:
 
 ;;; --- Registration ---
 
-(cl-defun sidebar-utils-define (&key id components protected)
+(cl-defun sidebar-utils-define (&key id components (protected t))
   "Register a sidebar group.
 ID is a symbol identifying the group.
 COMPONENTS is a list of plists, each with :id :buffer :show-fn :hide-fn :ratio.
 The :ratio values should sum to 1.0.
-PROTECTED non-nil sets `no-delete-other-windows' on component windows."
+PROTECTED (default t) sets `no-delete-other-windows' on component windows."
   (setf (alist-get id sidebar-utils--registry)
         (list :components components :protected protected)))
 
