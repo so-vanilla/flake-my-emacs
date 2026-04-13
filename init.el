@@ -695,7 +695,41 @@ _r_: row(table)
     :global-minor-mode t
     :custom
     ((org-agenda-custom-commands .
-                                 `(("g" "General"
+                                 `(("g" "General (Private)"
+                                    ((agenda ""
+                                             ((org-agenda-files '("~/org/todo.org" "~/org/schedule.org"))
+                                              (org-agenda-span 'day)
+                                              (org-super-agenda-groups `((:name "schedule"
+                                                                                :time-grid t
+                                                                                :date today
+                                                                                :deadline today)
+                                                                         (:discard (:anything t))))))
+                                     (alltodo ""
+                                              ((org-agenda-span 'day)
+                                               (org-agenda-files '("~/org/todo.org"))
+                                               (org-agenda-entry-types '(deadline scheduled timestamp))
+                                               (org-super-agenda-groups `((:name "Mind"
+                                                                                 :tag "mind")
+                                                                          (:name "Overdue"
+                                                                                 :deadline past)
+                                                                          (:name "Today"
+                                                                                 :deadline today)
+                                                                          (:name "Due Soon"
+                                                                                 :and (:deadline (before ,(org-read-date nil nil "+1w"))
+                                                                                                 :deadline (after ,(org-read-date nil nil ""))))
+                                                                          (:name "Daily"
+                                                                                 :tag "daily")
+                                                                          (:name "Weekly"
+                                                                                 :tag "weekly")
+                                                                          (:name "Monthly"
+                                                                                 :tag "monthly")
+                                                                          (:name "Life"
+                                                                                 :tags ("food" "household" "clothes" "chores"))
+                                                                          (:name "Emacs"
+                                                                                 :tag "emacs")
+                                                                          (:name "NixOS"
+                                                                                 :tag "nixos")))))))
+                                   ("w" "Work"
                                     ((agenda ""
                                              ((org-agenda-files '("~/org/todo.org" "~/org/schedule.org"))
                                               (org-agenda-span 'day)
@@ -726,7 +760,8 @@ _r_: row(table)
                                                                           (:name "Emacs"
                                                                                  :tag "emacs")
                                                                           (:name "NixOS"
-                                                                                 :tag "nixos")))))))))))
+                                                                                 :tag "nixos")
+                                                                          (:discard (:tags ("food" "household" "clothes" "chores")))))))))))))
 
   (leaf org-capture
     :tag "builtin"
