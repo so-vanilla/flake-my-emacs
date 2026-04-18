@@ -78,18 +78,20 @@
     :tag "builtin"
     :preface
     (defun my/clipboard-copy-wayland (text)
-      (setq copy-process (make-process :name "clipboard-copy"
-					                   :buffer nil
-					                   :command '("wl-copy" "-n")
-					                   :connection-type 'pipe
-					                   :noquery t))
+      (let ((default-directory "/"))
+        (setq copy-process (make-process :name "clipboard-copy"
+                                         :buffer nil
+                                         :command '("wl-copy" "-n")
+                                         :connection-type 'pipe
+                                         :noquery t)))
       (process-send-string copy-process text)
       (process-send-eof copy-process))
 
     (defun my/clipboard-paste-wayland ()
       (if (and copy-process (process-live-p copy-process))
 	      nil
-	    (shell-command-to-string "wl-paste -n | tr -d \\r")))
+	    (let ((default-directory "/"))
+	      (shell-command-to-string "wl-paste -n | tr -d \\r"))))
 
     (defun my/clipboard-copy-darwin (text)
       (let ((process-connection-type nil))
@@ -1403,7 +1405,12 @@ _g_: goto page
          " ")))
 
     (setq eshell-prompt-function #'my/eshell-prompt)
-    (setq eshell-prompt-regexp "^[^❯]*❯ "))
+    (setq eshell-prompt-regexp "^[^❯]*❯ ")
+
+    (defun my/eshell-no-alias-on-remote (orig-fun name)
+      (unless (file-remote-p default-directory)
+        (funcall orig-fun name)))
+    (advice-add 'eshell-lookup-alias :around #'my/eshell-no-alias-on-remote))
 
   (leaf eshell-syntax-highlighting
     :url "https://github.com/akreisher/eshell-syntax-highlighting"
