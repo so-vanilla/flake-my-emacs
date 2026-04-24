@@ -1305,13 +1305,13 @@ _g_: goto page
      :components
      (list (list :id 'persp-sidebar
                  :buffer "*Persp Utils Sidebar*"
-                 :show-fn #'persp-utils-sidebar--ensure-displayed
-                 :hide-fn #'persp-utils-sidebar-close
+                 :show-fn 'persp-utils-sidebar--ensure-displayed
+                 :hide-fn 'persp-utils-sidebar-close
                  :ratio 1/3)
            (list :id 'org-timeblock
                  :buffer "*Org Timeblock*"
-                 :show-fn #'org-timeblock-show
-                 :hide-fn #'org-timeblock-close
+                 :show-fn 'org-timeblock-show
+                 :hide-fn 'org-timeblock-close
                  :ratio 2/3)))
     (sidebar-utils-mode 1))
 
