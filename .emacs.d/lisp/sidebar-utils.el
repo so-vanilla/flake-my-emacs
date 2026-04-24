@@ -249,8 +249,12 @@ POLICY is one of `always-show', `neutral', `always-close'."
      (advice-add 'persp-switch :after #'sidebar-utils--after-persp-switch)
      (advice-add 'delete-other-windows :before #'sidebar-utils--before-delete-other-windows)
      (add-to-list 'window-persistent-parameters '(no-delete-other-windows . writable))
-     (dolist (id sidebar-utils--global-active)
-       (sidebar-utils--show-one id)))
+     ;; Re-activate all previously global sidebars; if none, show all registered
+     (let ((ids (or sidebar-utils--global-active
+                    (mapcar #'car sidebar-utils--registry))))
+       (dolist (id ids)
+         (cl-pushnew id sidebar-utils--global-active)
+         (sidebar-utils--show-one id))))
     ('neutral nil)
     ('always-close
      (advice-add 'persp-switch :after #'sidebar-utils--after-persp-switch)

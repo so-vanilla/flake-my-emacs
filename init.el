@@ -1307,12 +1307,12 @@ _g_: goto page
                  :buffer "*Persp Utils Sidebar*"
                  :show-fn 'persp-utils-sidebar--ensure-displayed
                  :hide-fn 'persp-utils-sidebar-close
-                 :ratio 1/3)
+                 :ratio (/ 1.0 3))
            (list :id 'org-timeblock
                  :buffer "*Org Timeblock*"
                  :show-fn 'org-timeblock-show
                  :hide-fn 'org-timeblock-close
-                 :ratio 2/3)))
+                 :ratio (/ 2.0 3))))
     (sidebar-utils-mode 1))
 
   (leaf eshell
