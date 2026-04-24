@@ -726,7 +726,7 @@ _r_: row(table)
                                                                           (:name "Monthly"
                                                                                  :tag "monthly")
                                                                           (:name "Life"
-                                                                                 :tags ("food" "household" "clothes" "chores"))
+                                                                                 :tag ("food" "household" "clothes" "chores"))
                                                                           (:name "Emacs"
                                                                                  :tag "emacs")
                                                                           (:name "NixOS"
@@ -763,7 +763,7 @@ _r_: row(table)
                                                                                  :tag "emacs")
                                                                           (:name "NixOS"
                                                                                  :tag "nixos")
-                                                                          (:discard (:tags ("food" "household" "clothes" "chores")))))))))))))
+                                                                          (:discard (:tag ("food" "household" "clothes" "chores")))))))))))))
 
   (leaf org-capture
     :tag "builtin"
