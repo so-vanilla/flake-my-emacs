@@ -1,9 +1,9 @@
 {
-  epkgs
+  epkgs,
 }:
-with epkgs; [
+with epkgs;
+[
   projectile
-  perspective
   ddskk
   direnv
   dirvish

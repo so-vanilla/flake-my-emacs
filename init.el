@@ -1105,92 +1105,10 @@ SILENT non-nil skips prompt and aborts if unsaved."
           :custom
           ((claude-code-ide-terminal-backend . 'vterm)
            (claude-code-ide-cli-extra-flags . "--dangerously-skip-permissions"))
-          :bind (("M-c" . claude-code-ide-menu)))
-        (leaf claude-code-ide-modeline
-          :after claude-code-ide
-          :require t
-          :global-minor-mode claude-code-ide-modeline-mode))))
+          :bind (("M-c" . claude-code-ide-menu))))))
 
 (leaf *others
   :config
-  (leaf claude-code-utils-session-status
-    :require t
-    :global-minor-mode claude-code-utils-session-status-mode)
-
-  (leaf persp-utils
-    :require t
-    :custom
-    ((persp-utils-sidebar-session-status-function . 'claude-code-utils-session-status-format)
-     (persp-utils-workspace-auto-setup-on-startup . t)
-     (persp-utils-workspace-default-perspective . "general")
-     (persp-utils-workspace-kill-initial-perspective . "main")
-     (persp-utils-terminal-function . 'eshell)
-     (persp-utils-workspace-templates
-      . '((:name "general" :dir "~/org/"
-                 :setup (lambda (&optional _dir)
-                          (let ((org-agenda-window-setup 'current-window))
-                            (org-agenda nil "g"))
-                          (when (derived-mode-p 'org-agenda-mode)
-                            (local-set-key (kbd "q") #'ignore))))
-          (:name "emacs"
-                 :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-emacs")
-                 :dir "~/repos/github.com/so-vanilla/flake-my-emacs"
-                 :setup (lambda (&optional dir) (dired (or dir default-directory))))
-          (:name "claude"
-                 :condition (file-directory-p "~/repos/github.com/so-vanilla/flake-my-claude")
-                 :dir "~/repos/github.com/so-vanilla/flake-my-claude"
-                 :setup (lambda (&optional dir) (dired (or dir default-directory))))
-          (:name "work" :dir "~/"
-                 :setup (lambda (&optional dir) (dired (or dir default-directory)))))))
-    :config
-    (with-eval-after-load 'claude-code-utils-session-status
-      (add-hook 'claude-code-utils-session-status--change-hook
-                (lambda ()
-                  (run-with-idle-timer 0.1 nil #'persp-utils-sidebar-refresh)))
-      (add-hook 'persp-utils-sidebar-refresh-hook
-                #'claude-code-utils-session-status--scan-directory))
-    (add-hook 'persp-utils-workspace-post-setup-hook
-              (lambda ()
-                (sidebar-utils-global-show 'left-panel))))
-
-  (leaf perspective
-    :url "https://github.com/nex3/perspective-el"
-    :custom
-    ((persp-suppress-no-prefix-key-warning . t)
-     (persp-show-modestring . nil))
-    :init
-    (persp-mode)
-
-    :bind
-    (("M-m" . hydra-perspective-side-bar/body)
-     ("M-j" . persp-next)
-     ("M-k" . persp-prev))
-
-    :hydra
-    ((hydra-perspective-side-bar
-      (:hint nil)
-      "
-^Perspective^            ^Navigate^          ^Sidebar^
-^^-----------------------------------------------------------
-_c_: create              _n_: next           _s_: show
-_k_: kill                _p_: previous       _t_: toggle
-_r_: rename              _j_: next           _f_: focus
-_o_: open project        _k_: previous       _q_: quit
-"
-      ("c" persp-switch)
-      ("k" persp-kill)
-      ("r" persp-rename)
-      ("o" persp-utils-project-ghq :exit t)
-      ("n" persp-next)
-      ("p" persp-prev)
-      ("j" persp-next)
-      ("p" persp-prev)
-      ("s" persp-utils-sidebar-show :exit t)
-      ("t" persp-utils-sidebar-toggle :exit t)
-      ("f" persp-utils-sidebar-focus :exit t)
-      ("q" nil :exit t)
-      ("C-m" nil :exit t))))
-
   (leaf projectile
     :global-minor-mode t
     :bind
@@ -1294,26 +1212,6 @@ _g_: goto page
                    (window-parameters . ((no-delete-other-windows . t)))))
     :bind
     (("<f3>" . org-timeblock-toggle)))
-
-  (leaf sidebar-utils
-    :load-path "~/.emacs.d/lisp"
-    :require t
-    :config
-    (sidebar-utils-define
-     :id 'left-panel
-     :protected t
-     :components
-     (list (list :id 'persp-sidebar
-                 :buffer "*Persp Utils Sidebar*"
-                 :show-fn 'persp-utils-sidebar--ensure-displayed
-                 :hide-fn 'persp-utils-sidebar-close
-                 :ratio (/ 1.0 3))
-           (list :id 'org-timeblock
-                 :buffer "*Org Timeblock*"
-                 :show-fn 'org-timeblock-show
-                 :hide-fn 'org-timeblock-close
-                 :ratio (/ 2.0 3))))
-    (sidebar-utils-mode 1))
 
   (leaf eshell
     :tag "builtin"

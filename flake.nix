@@ -8,16 +8,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
-    claude-code-utils = {
-      url = "github:so-vanilla/claude-code-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-    persp-utils = {
-      url = "github:so-vanilla/persp-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
   };
 
   outputs =
@@ -28,10 +18,6 @@
         pkgs = import inputs.nixpkgs {
           inherit system;
           overlays = [ (import inputs.emacs-overlay) ];
-        };
-        extraPkgs = {
-          claude-code-utils = inputs.claude-code-utils.packages.${system}.claude-code-utils;
-          persp-utils = inputs.persp-utils.packages.${system}.persp-utils;
         };
         mkEmacsclientApp =
           finalPackage:
@@ -90,23 +76,22 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-unstable-pgtk;
-                extraPackages = import ./epkgs { inherit pkgs extraPkgs; };
               };
 
-              home.file =
-                {
-                  ".emacs.d/init.el".source = ./init.el;
-                  ".emacs.d/early-init.el".source = ./early-init.el;
-                  ".emacs.d/templates".source = ./templates;
-                  ".ddskk/init".source = ./.ddskk/init;
-                  ".emacs.d/lisp".source = ./.emacs.d/lisp;
-                  ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
-                  ".emacs.d/lsp-bridge/kotlin-language-server.json".source = ./.emacs.d/lsp-bridge/kotlin-language-server.json;
-                }
-                // (lib.optionalAttrs pkgs.stdenv.isDarwin {
-                  "Applications/Emacsclient.app".source =
-                    "${mkEmacsclientApp config.programs.emacs.finalPackage}/Emacsclient.app";
-                });
+              home.file = {
+                ".emacs.d/init.el".source = ./init.el;
+                ".emacs.d/early-init.el".source = ./early-init.el;
+                ".emacs.d/templates".source = ./templates;
+                ".ddskk/init".source = ./.ddskk/init;
+                ".emacs.d/lisp".source = ./.emacs.d/lisp;
+                ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
+                ".emacs.d/lsp-bridge/kotlin-language-server.json".source =
+                  ./.emacs.d/lsp-bridge/kotlin-language-server.json;
+              }
+              // (lib.optionalAttrs pkgs.stdenv.isDarwin {
+                "Applications/Emacsclient.app".source =
+                  "${mkEmacsclientApp config.programs.emacs.finalPackage}/Emacsclient.app";
+              });
             };
           stable =
             { config, lib, ... }:
@@ -114,23 +99,22 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs;
-                extraPackages = import ./epkgs { inherit pkgs extraPkgs; };
               };
 
-              home.file =
-                {
-                  ".emacs.d/init.el".source = ./init.el;
-                  ".emacs.d/early-init.el".source = ./early-init.el;
-                  ".emacs.d/templates".source = ./templates;
-                  ".ddskk/init".source = ./.ddskk/init;
-                  ".emacs.d/lisp".source = ./.emacs.d/lisp;
-                  ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
-                  ".emacs.d/lsp-bridge/kotlin-language-server.json".source = ./.emacs.d/lsp-bridge/kotlin-language-server.json;
-                }
-                // (lib.optionalAttrs pkgs.stdenv.isDarwin {
-                  "Applications/Emacsclient.app".source =
-                    "${mkEmacsclientApp config.programs.emacs.finalPackage}/Emacsclient.app";
-                });
+              home.file = {
+                ".emacs.d/init.el".source = ./init.el;
+                ".emacs.d/early-init.el".source = ./early-init.el;
+                ".emacs.d/templates".source = ./templates;
+                ".ddskk/init".source = ./.ddskk/init;
+                ".emacs.d/lisp".source = ./.emacs.d/lisp;
+                ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
+                ".emacs.d/lsp-bridge/kotlin-language-server.json".source =
+                  ./.emacs.d/lsp-bridge/kotlin-language-server.json;
+              }
+              // (lib.optionalAttrs pkgs.stdenv.isDarwin {
+                "Applications/Emacsclient.app".source =
+                  "${mkEmacsclientApp config.programs.emacs.finalPackage}/Emacsclient.app";
+              });
             };
           macport =
             { config, lib, ... }:
@@ -138,23 +122,22 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-macport;
-                extraPackages = import ./epkgs { inherit pkgs extraPkgs; };
               };
 
-              home.file =
-                {
-                  ".emacs.d/init.el".source = ./init.el;
-                  ".emacs.d/early-init.el".source = ./early-init.el;
-                  ".emacs.d/templates".source = ./templates;
-                  ".ddskk/init".source = ./.ddskk/init;
-                  ".emacs.d/lisp".source = ./.emacs.d/lisp;
-                  ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
-                  ".emacs.d/lsp-bridge/kotlin-language-server.json".source = ./.emacs.d/lsp-bridge/kotlin-language-server.json;
-                }
-                // (lib.optionalAttrs pkgs.stdenv.isDarwin {
-                  "Applications/Emacsclient.app".source =
-                    "${mkEmacsclientApp config.programs.emacs.finalPackage}/Emacsclient.app";
-                });
+              home.file = {
+                ".emacs.d/init.el".source = ./init.el;
+                ".emacs.d/early-init.el".source = ./early-init.el;
+                ".emacs.d/templates".source = ./templates;
+                ".ddskk/init".source = ./.ddskk/init;
+                ".emacs.d/lisp".source = ./.emacs.d/lisp;
+                ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
+                ".emacs.d/lsp-bridge/kotlin-language-server.json".source =
+                  ./.emacs.d/lsp-bridge/kotlin-language-server.json;
+              }
+              // (lib.optionalAttrs pkgs.stdenv.isDarwin {
+                "Applications/Emacsclient.app".source =
+                  "${mkEmacsclientApp config.programs.emacs.finalPackage}/Emacsclient.app";
+              });
             };
         };
       }

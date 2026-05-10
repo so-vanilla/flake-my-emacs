@@ -1,6 +1,5 @@
 {
   pkgs,
-  extraPkgs ? { },
 }:
 epkgs:
 import ./leaf.nix { inherit epkgs; }
@@ -16,7 +15,3 @@ import ./leaf.nix { inherit epkgs; }
 ++ import ./ai.nix { inherit epkgs; }
 ++ import ./utils.nix { inherit epkgs; }
 ++ import ./appearance.nix { inherit epkgs; }
-++ [
-  extraPkgs.claude-code-utils
-  extraPkgs.persp-utils
-]
