@@ -76,6 +76,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-unstable-pgtk;
+		extraPackages = import ./epkgs { inherit pkgs; };
               };
 
               home.file = {
@@ -99,6 +100,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs;
+		extraPackages = import ./epkgs { inherit pkgs; };
               };
 
               home.file = {
@@ -122,6 +124,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-macport;
+		extraPackages = import ./epkgs { inherit pkgs; };
               };
 
               home.file = {
