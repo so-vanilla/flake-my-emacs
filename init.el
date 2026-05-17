@@ -9,7 +9,7 @@
   (when (string= system-type "darwin")
     `(progn ,@body)))
 
-(let ((private-hosts '("vanilla"))
+(let ((private-hosts '("vanilla" "chocolate"))
       (current-host (system-name)))
   (defvar is-private-host
     (if (member current-host private-hosts)
