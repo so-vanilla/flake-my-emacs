@@ -15,6 +15,7 @@ with epkgs;
   jinx
   apheleia
   exec-path-from-shell
+  docker
   pdf-tools
   nov
 ]

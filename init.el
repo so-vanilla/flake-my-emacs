@@ -1355,6 +1355,16 @@ _g_: goto page
     (("M-$" . jinx-correct)
      ("C-M-$" . jinx-languages)))
 
+  (leaf docker
+    :url "https://github.com/Silex/docker.el"
+    :custom
+    ((docker-compose-command . "docker compose")
+     (docker-container-shell-file-name . "/bin/bash")
+     (docker-show-status . t)
+     (docker-terminal-backend . 'eat))
+    :bind
+    (("C-c d" . docker)))
+
   (leaf dirvish
     :url "https://github.com/alexluigit/dirvish"
     :init
