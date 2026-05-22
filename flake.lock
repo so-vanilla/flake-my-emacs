@@ -1,5 +1,37 @@
 {
   "nodes": {
+    "claude-code-el": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777579222,
+        "narHash": "sha256-5QJrWIu4EgnHcOqMwlrs2JBBx7aI9OaSJswesr6Apfk=",
+        "owner": "stevemolitor",
+        "repo": "claude-code.el",
+        "rev": "03199df8b3a1e9cd4857f0851f7a912ba524aff3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "stevemolitor",
+        "repo": "claude-code.el",
+        "type": "github"
+      }
+    },
+    "claude-code-ide-el": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1775107224,
+        "narHash": "sha256-qH1QnG5G+0UiH/v0KaS7oSpQZY+BkUMZvrjbx6kyFhg=",
+        "owner": "manzaltu",
+        "repo": "claude-code-ide.el",
+        "rev": "56db02ee386d009ddb8b1482310f1f9beeefb810",
+        "type": "github"
+      },
+      "original": {
+        "owner": "manzaltu",
+        "repo": "claude-code-ide.el",
+        "type": "github"
+      }
+    },
     "emacs-overlay": {
       "inputs": {
         "nixpkgs": [
@@ -39,6 +71,22 @@
         "type": "github"
       }
     },
+    "ghostel-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1779394572,
+        "narHash": "sha256-QwNavm38hhvU3NOm0fgywiTYSOyxNFAr9INyHtdtK90=",
+        "owner": "dakra",
+        "repo": "ghostel",
+        "rev": "41e42986a2bcd2d4488cfd60e12dc62dc6dc0952",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dakra",
+        "repo": "ghostel",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1778869304,
@@ -73,8 +121,11 @@
     },
     "root": {
       "inputs": {
+        "claude-code-el": "claude-code-el",
+        "claude-code-ide-el": "claude-code-ide-el",
         "emacs-overlay": "emacs-overlay",
         "flake-utils": "flake-utils",
+        "ghostel-src": "ghostel-src",
         "nixpkgs": "nixpkgs"
       }
     },

@@ -1097,15 +1097,22 @@ SILENT non-nil skips prompt and aborts if unsaved."
   (leaf copilot-chat
     :url "https://github.com/chep/copilot-chat.el")
 
-  (if (file-exists-p "~/repos/github.com/manzaltu/claude-code-ide.el/")
-      (progn
-        (add-to-list 'load-path "~/repos/github.com/manzaltu/claude-code-ide.el")
-        (leaf claude-code-ide
-          :ensure nil
-          :custom
-          ((claude-code-ide-terminal-backend . 'vterm)
-           (claude-code-ide-cli-extra-flags . "--dangerously-skip-permissions"))
-          :bind (("M-c" . claude-code-ide-menu))))))
+  (leaf claude-code
+    :url "https://github.com/stevemolitor/claude-code.el"
+    :custom
+    ((claude-code-terminal-backend . 'ghostel)
+     (claude-code-program-switches . '("--dangerously-skip-permissions")))
+    :bind (("C-c c" . claude-code-command-map)))
+
+  (leaf ghostel
+    :url "https://github.com/dakra/ghostel")
+
+  (leaf claude-code-ide
+    :url "https://github.com/manzaltu/claude-code-ide.el"
+    :custom
+    ((claude-code-ide-terminal-backend . 'vterm)
+     (claude-code-ide-cli-extra-flags . "--dangerously-skip-permissions"))
+    :bind (("M-c" . claude-code-ide-menu))))
 
 (leaf *others
   :config

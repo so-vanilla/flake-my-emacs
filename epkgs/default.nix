@@ -1,5 +1,6 @@
 {
   pkgs,
+  inputs,
 }:
 epkgs:
 import ./leaf.nix { inherit epkgs; }
@@ -12,6 +13,6 @@ import ./leaf.nix { inherit epkgs; }
 ++ import ./completion.nix { inherit epkgs; }
 ++ import ./org.nix { inherit epkgs; }
 ++ import ./language.nix { inherit epkgs; }
-++ import ./ai.nix { inherit epkgs; }
+++ import ./ai.nix { inherit epkgs inputs; }
 ++ import ./utils.nix { inherit epkgs; }
 ++ import ./appearance.nix { inherit epkgs; }

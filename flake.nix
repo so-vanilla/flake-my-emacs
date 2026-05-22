@@ -8,6 +8,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    claude-code-el = {
+      url = "github:stevemolitor/claude-code.el";
+      flake = false;
+    };
+    claude-code-ide-el = {
+      url = "github:manzaltu/claude-code-ide.el";
+      flake = false;
+    };
+    ghostel-src = {
+      url = "github:dakra/ghostel";
+      flake = false;
+    };
   };
 
   outputs =
@@ -76,7 +88,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-unstable-pgtk;
-		extraPackages = import ./epkgs { inherit pkgs; };
+		extraPackages = import ./epkgs { inherit pkgs inputs; };
               };
 
               home.file = {
@@ -100,7 +112,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs;
-		extraPackages = import ./epkgs { inherit pkgs; };
+		extraPackages = import ./epkgs { inherit pkgs inputs; };
               };
 
               home.file = {
@@ -124,7 +136,7 @@
               programs.emacs = {
                 enable = true;
                 package = pkgs.emacs-macport;
-		extraPackages = import ./epkgs { inherit pkgs; };
+		extraPackages = import ./epkgs { inherit pkgs inputs; };
               };
 
               home.file = {
