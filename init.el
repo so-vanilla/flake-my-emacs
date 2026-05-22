@@ -1102,17 +1102,18 @@ SILENT non-nil skips prompt and aborts if unsaved."
     :custom
     ((claude-code-terminal-backend . 'ghostel)
      (claude-code-program-switches . '("--dangerously-skip-permissions")))
-    :bind (("C-c c" . claude-code-command-map)))
+    :bind (("M-i" . claude-code-transient)))
 
   (leaf ghostel
-    :url "https://github.com/dakra/ghostel")
+    :url "https://github.com/dakra/ghostel"
+    :hook ((ghostel-mode-hook . (lambda () (puni-mode -1)))))
 
   (leaf claude-code-ide
     :url "https://github.com/manzaltu/claude-code-ide.el"
     :custom
     ((claude-code-ide-terminal-backend . 'vterm)
      (claude-code-ide-cli-extra-flags . "--dangerously-skip-permissions"))
-    :bind (("M-c" . claude-code-ide-menu))))
+    :bind (("C-c c" . claude-code-ide-menu))))
 
 (leaf *others
   :config
