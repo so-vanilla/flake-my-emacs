@@ -8,16 +8,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
-    claude-code-el = {
-      url = "github:stevemolitor/claude-code.el";
-      flake = false;
-    };
     claude-code-ide-el = {
       url = "github:manzaltu/claude-code-ide.el";
-      flake = false;
-    };
-    ghostel-src = {
-      url = "github:dakra/ghostel";
       flake = false;
     };
   };

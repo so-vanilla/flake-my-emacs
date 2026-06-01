@@ -1097,23 +1097,14 @@ SILENT non-nil skips prompt and aborts if unsaved."
   (leaf copilot-chat
     :url "https://github.com/chep/copilot-chat.el")
 
-  (leaf claude-code
-    :url "https://github.com/stevemolitor/claude-code.el"
-    :custom
-    ((claude-code-terminal-backend . 'ghostel)
-     (claude-code-program-switches . '("--dangerously-skip-permissions")))
-    :bind (("M-i" . claude-code-transient)))
-
-  (leaf ghostel
-    :url "https://github.com/dakra/ghostel"
-    :hook ((ghostel-mode-hook . (lambda () (puni-mode -1)))))
-
   (leaf claude-code-ide
     :url "https://github.com/manzaltu/claude-code-ide.el"
+    :require t
     :custom
-    ((claude-code-ide-terminal-backend . 'vterm)
+    ((claude-code-ide-terminal-backend . 'eat)
+     (claude-code-ide-no-flicker . t)
      (claude-code-ide-cli-extra-flags . "--dangerously-skip-permissions"))
-    :bind (("C-c c" . claude-code-ide-menu))))
+    :bind (("M-c" . claude-code-ide-menu))))
 
 (leaf *others
   :config
@@ -1328,7 +1319,8 @@ _g_: goto page
     :hook
     ((eshell-load-hook . eat-eshell-mode))
     :custom
-    ((eat-enable-auto-line-mode . t))
+    ((eat-enable-auto-line-mode . t)
+     (eat-term-scrollback-size . 500000))
     :config
     (customize-set-variable
      'eat-semi-char-non-bound-keys
