@@ -77,22 +77,6 @@
   (leaf simple
     :tag "builtin"
     :preface
-    (defun my/clipboard-copy-wayland (text)
-      (let ((default-directory "/"))
-        (setq copy-process (make-process :name "clipboard-copy"
-                                         :buffer nil
-                                         :command '("wl-copy" "-n")
-                                         :connection-type 'pipe
-                                         :noquery t)))
-      (process-send-string copy-process text)
-      (process-send-eof copy-process))
-
-    (defun my/clipboard-paste-wayland ()
-      (if (and copy-process (process-live-p copy-process))
-	      nil
-	    (let ((default-directory "/"))
-	      (shell-command-to-string "wl-paste -n | tr -d \\r"))))
-
     (defun my/clipboard-copy-darwin (text)
       (let ((process-connection-type nil))
         (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
@@ -101,6 +85,23 @@
 
     (defun my/clipboard-paste-darwin ()
       (shell-command-to-string "pbpaste"))
+
+    (defun my/clipboard-copy-wayland (text)
+      (let* ((default-directory "/")
+             (proc (make-process :name "wl-copy"
+                                 :buffer nil
+                                 :command '("wl-copy" "-n")
+                                 :connection-type 'pipe
+                                 :noquery t)))
+        (process-send-string proc text)
+        (process-send-eof proc)))
+
+    (defun my/clipboard-paste-wayland ()
+      (let ((default-directory "/"))
+        (with-temp-buffer
+          (call-process "wl-paste" nil t nil "-n" "-t" "text/plain;charset=utf-8")
+          (unless (= (point-min) (point-max))
+            (buffer-string)))))
 
     (defun my-move-beginning-of-line ()
       "Move point to first non-whitespace character or beginning-of-line."
@@ -122,14 +123,17 @@
     :hook
     ((before-save-hook . delete-trailing-whitespace))
     :custom
-    ((copy-process . nil)
-     (indent-tabs-mode . nil))
+    ((indent-tabs-mode . nil)
+     (select-active-regions . nil))
     :config
-    (if (string= system-type "darwin")
-        (setq interprogram-cut-function 'my/clipboard-copy-darwin
-              interprogram-paste-function 'my/clipboard-paste-darwin)
-      (setq interprogram-cut-function 'my/clipboard-copy-wayland
-            interprogram-paste-function 'my/clipboard-paste-wayland))
+    (setq interprogram-cut-function
+          (if (string= system-type "darwin")
+              #'my/clipboard-copy-darwin
+            #'my/clipboard-copy-wayland)
+          interprogram-paste-function
+          (if (string= system-type "darwin")
+              #'my/clipboard-paste-darwin
+            #'my/clipboard-paste-wayland))
     :bind
     (("C-x u" . my-undo)
      ("C-x r" . my-redo)
