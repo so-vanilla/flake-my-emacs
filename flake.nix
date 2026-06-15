@@ -1,5 +1,5 @@
 {
-  description = "Emacs configuration flake for home-manager";
+  description = "Terminal Emacs configuration flake for home-manager";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -8,10 +8,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
-    claude-code-ide-el = {
-      url = "github:manzaltu/claude-code-ide.el";
-      flake = false;
-    };
   };
 
   outputs =
@@ -23,130 +19,128 @@
           inherit system;
           overlays = [ (import inputs.emacs-overlay) ];
         };
-        mkEmacsclientApp =
-          finalPackage:
+
+        lib = pkgs.lib;
+
+        sharedLibrarySuffix = if pkgs.stdenv.isDarwin then "dylib" else "so";
+
+        treeSitterGrammarBundle =
           let
-            launcherScript = pkgs.writeShellScript "Emacsclient" ''
-              if ! "${finalPackage}/bin/emacsclient" -e "(server-running-p)" >/dev/null 2>&1; then
-                "${finalPackage}/bin/emacs" --daemon
-              fi
-              exec "${finalPackage}/bin/emacsclient" -c "$@"
-            '';
-            infoPlist = pkgs.writeText "emacsclient-info-plist" ''
-              <?xml version="1.0" encoding="UTF-8"?>
-              <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-              <plist version="1.0">
-              <dict>
-                <key>CFBundleName</key>
-                <string>Emacsclient</string>
-                <key>CFBundleExecutable</key>
-                <string>Emacsclient</string>
-                <key>CFBundleIdentifier</key>
-                <string>org.gnu.Emacsclient</string>
-                <key>CFBundleIconFile</key>
-                <string>Emacsclient</string>
-                <key>CFBundlePackageType</key>
-                <string>APPL</string>
-                <key>CFBundleVersion</key>
-                <string>1.0</string>
-                <key>CFBundleShortVersionString</key>
-                <string>1.0</string>
-                <key>CFBundleInfoDictionaryVersion</key>
-                <string>6.0</string>
-              </dict>
-              </plist>
-            '';
+            grammars = with pkgs.tree-sitter-grammars; {
+              bash = tree-sitter-bash;
+              dockerfile = tree-sitter-dockerfile;
+              go = tree-sitter-go;
+              gomod = tree-sitter-gomod;
+              hcl = tree-sitter-hcl;
+              java = tree-sitter-java;
+              json = tree-sitter-json;
+              lua = tree-sitter-lua;
+              markdown = tree-sitter-markdown;
+              markdown-inline = tree-sitter-markdown-inline;
+              nix = tree-sitter-nix;
+              python = tree-sitter-python;
+              toml = tree-sitter-toml;
+              yaml = tree-sitter-yaml;
+            };
           in
-          pkgs.stdenv.mkDerivation {
-            pname = "emacsclient-app";
-            version = finalPackage.version or "1.0";
-            dontUnpack = true;
-            installPhase = ''
-              APP="$out/Emacsclient.app"
-              mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-              cp ${finalPackage}/Applications/Emacs.app/Contents/Resources/Emacs.icns \
-                 "$APP/Contents/Resources/Emacsclient.icns"
-              cp ${infoPlist} "$APP/Contents/Info.plist"
-              cp ${launcherScript} "$APP/Contents/MacOS/Emacsclient"
-              chmod +x "$APP/Contents/MacOS/Emacsclient"
-            '';
+          pkgs.runCommand "emacs-tree-sitter-grammars" { } ''
+            mkdir -p "$out"
+            ${lib.concatStringsSep "\n" (
+              lib.mapAttrsToList (
+                language: grammar:
+                ''ln -s ${grammar}/parser "$out/libtree-sitter-${language}.${sharedLibrarySuffix}"''
+              ) grammars
+            )}
+          '';
+
+        languageTools =
+          with pkgs;
+          [
+            basedpyright
+            bash-language-server
+            deadnix
+            dockerfile-language-server
+            emacs-lsp-booster
+            fd
+            fzf
+            git
+            google-java-format
+            gopls
+            gotools
+            hadolint
+            jdt-language-server
+            luajitPackages.luacheck
+            lua-language-server
+            markdownlint-cli
+            marksman
+            nixd
+            nixfmt
+            nodejs_24
+            prettier
+            ripgrep
+            ruff
+            shellcheck
+            shfmt
+            statix
+            stylua
+            taplo
+            terraform-ls
+            tflint
+            vscode-langservers-extracted
+            yaml-language-server
+          ]
+          ++ lib.optionals pkgs.stdenv.isLinux [ pkgs.wl-clipboard ];
+
+        weztermConfig = pkgs.writeText "wezterm.lua" (builtins.readFile ./wezterm/wezterm.lua);
+        windowsWeztermConfig = pkgs.writeText "windows.wezterm.lua" (
+          builtins.readFile ./wezterm/windows.wezterm.lua
+        );
+
+        homeManagerModule =
+          { lib, ... }:
+          {
+            home.packages = languageTools;
+
+            home.sessionVariables = {
+              EDITOR = lib.mkOverride 900 "emacsclient -t";
+              VISUAL = lib.mkOverride 900 "emacsclient -t";
+              ALTERNATE_EDITOR = lib.mkDefault "";
+            };
+
+            programs.emacs = {
+              enable = true;
+              package = pkgs.emacs-unstable-nox;
+              extraPackages = import ./epkgs { inherit pkgs; };
+            };
+
+            programs.wezterm = {
+              enable = true;
+              package = pkgs.wezterm;
+              extraConfig = builtins.readFile ./wezterm/wezterm.lua;
+            };
+
+            services.emacs = {
+              enable = true;
+              client.enable = true;
+            };
+
+            home.file = {
+              ".emacs.d/init.el".source = ./init.el;
+              ".emacs.d/early-init.el".source = ./early-init.el;
+              ".emacs.d/tree-sitter-grammars".source = treeSitterGrammarBundle;
+            };
           };
       in
       {
-        homeManagerModules = {
-          pgtk =
-            { config, lib, ... }:
-            {
-              programs.emacs = {
-                enable = true;
-                package = pkgs.emacs-unstable-pgtk;
-		extraPackages = import ./epkgs { inherit pkgs inputs; };
-              };
-
-              home.file = {
-                ".emacs.d/init.el".source = ./init.el;
-                ".emacs.d/early-init.el".source = ./early-init.el;
-                ".emacs.d/templates".source = ./templates;
-                ".ddskk/init".source = ./.ddskk/init;
-                ".emacs.d/lisp".source = ./.emacs.d/lisp;
-                ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
-                ".emacs.d/lsp-bridge/kotlin-language-server.json".source =
-                  ./.emacs.d/lsp-bridge/kotlin-language-server.json;
-              }
-              // (lib.optionalAttrs pkgs.stdenv.isDarwin {
-                "Applications/Emacsclient.app".source =
-                  "${mkEmacsclientApp config.programs.emacs.finalPackage}/Emacsclient.app";
-              });
-            };
-          stable =
-            { config, lib, ... }:
-            {
-              programs.emacs = {
-                enable = true;
-                package = pkgs.emacs;
-		extraPackages = import ./epkgs { inherit pkgs inputs; };
-              };
-
-              home.file = {
-                ".emacs.d/init.el".source = ./init.el;
-                ".emacs.d/early-init.el".source = ./early-init.el;
-                ".emacs.d/templates".source = ./templates;
-                ".ddskk/init".source = ./.ddskk/init;
-                ".emacs.d/lisp".source = ./.emacs.d/lisp;
-                ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
-                ".emacs.d/lsp-bridge/kotlin-language-server.json".source =
-                  ./.emacs.d/lsp-bridge/kotlin-language-server.json;
-              }
-              // (lib.optionalAttrs pkgs.stdenv.isDarwin {
-                "Applications/Emacsclient.app".source =
-                  "${mkEmacsclientApp config.programs.emacs.finalPackage}/Emacsclient.app";
-              });
-            };
-          macport =
-            { config, lib, ... }:
-            {
-              programs.emacs = {
-                enable = true;
-                package = pkgs.emacs-macport;
-		extraPackages = import ./epkgs { inherit pkgs inputs; };
-              };
-
-              home.file = {
-                ".emacs.d/init.el".source = ./init.el;
-                ".emacs.d/early-init.el".source = ./early-init.el;
-                ".emacs.d/templates".source = ./templates;
-                ".ddskk/init".source = ./.ddskk/init;
-                ".emacs.d/lisp".source = ./.emacs.d/lisp;
-                ".emacs.d/lsp-bridge/sqls.json".source = ./.emacs.d/lsp-bridge/sqls.json;
-                ".emacs.d/lsp-bridge/kotlin-language-server.json".source =
-                  ./.emacs.d/lsp-bridge/kotlin-language-server.json;
-              }
-              // (lib.optionalAttrs pkgs.stdenv.isDarwin {
-                "Applications/Emacsclient.app".source =
-                  "${mkEmacsclientApp config.programs.emacs.finalPackage}/Emacsclient.app";
-              });
-            };
+        packages = {
+          default = pkgs.emacs-unstable-nox;
+          emacs = pkgs.emacs-unstable-nox;
+          tree-sitter-grammars = treeSitterGrammarBundle;
+          wezterm-config = weztermConfig;
+          windows-wezterm-config = windowsWeztermConfig;
         };
+
+        homeManagerModules.default = homeManagerModule;
       }
     );
 }

@@ -3,11 +3,8 @@
 }:
 with epkgs;
 [
-  clj-deps-new
-  clojure-mode
-  cider
-  cargo
-  kotlin-ts-mode
+  hcl-mode
+  markdown-mode
   nix-ts-mode
-  swift-ts-mode
+  terraform-mode
 ]

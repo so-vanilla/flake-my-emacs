@@ -4,5 +4,4 @@
 with epkgs;
 [
   magit
-  forge
 ]

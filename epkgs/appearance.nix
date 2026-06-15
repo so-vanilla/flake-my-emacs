@@ -1,12 +1,9 @@
 {
-  epkgs
+  epkgs,
 }:
-with epkgs; [
+with epkgs;
+[
+  rainbow-delimiters
   doom-modeline
-  nerd-icons
   catppuccin-theme
-  org-modern
-  nyan-mode
-  parrot
-  indent-bars
 ]

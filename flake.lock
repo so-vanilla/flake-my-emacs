@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "claude-code-ide-el": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1780335122,
-        "narHash": "sha256-6kaTPI2CCsdxxiCpZ7qqciv/HJCQRsJ8084+SqW8Idc=",
-        "owner": "manzaltu",
-        "repo": "claude-code-ide.el",
-        "rev": "a9485f766ea69f6cb3a3f08dea20d44fd6596673",
-        "type": "github"
-      },
-      "original": {
-        "owner": "manzaltu",
-        "repo": "claude-code-ide.el",
-        "type": "github"
-      }
-    },
     "emacs-overlay": {
       "inputs": {
         "nixpkgs": [
@@ -24,11 +8,11 @@
         "nixpkgs-stable": "nixpkgs-stable"
       },
       "locked": {
-        "lastModified": 1781460518,
-        "narHash": "sha256-fEPCVAZE8GVwZqw463YHV8X6+2sDk2bZALyG6OjCtJc=",
+        "lastModified": 1781531817,
+        "narHash": "sha256-JvuX75H5dwDlSvxMTbc5uO5Dryq6wpxTNYK+hdfrZhI=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "6e0678b1c499f616e71e08e7859959d3864d6a4c",
+        "rev": "7c56d9c6b77f9eb769a44251dd914c8529ccee6e",
         "type": "github"
       },
       "original": {
@@ -89,7 +73,6 @@
     },
     "root": {
       "inputs": {
-        "claude-code-ide-el": "claude-code-ide-el",
         "emacs-overlay": "emacs-overlay",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"

@@ -1,9 +1,9 @@
 {
-  epkgs
+  epkgs,
 }:
-with epkgs; [
+with epkgs;
+[
+  corfu
   cape
-  tempel
-  tempel-collection
   yasnippet
 ]

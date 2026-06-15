@@ -3,19 +3,9 @@
 }:
 with epkgs;
 [
-  projectile
-  ddskk
   direnv
-  dirvish
-  ace-window
-  mistty
-  eat
-  eshell-syntax-highlighting
-  vterm
-  jinx
   apheleia
-  exec-path-from-shell
   docker
-  pdf-tools
-  nov
+  ace-window
+  exec-path-from-shell
 ]
