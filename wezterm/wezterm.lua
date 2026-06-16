@@ -25,6 +25,7 @@ local function emacs_copy_mode_keys()
 end
 
 config.color_scheme = "Catppuccin Latte"
+config.font = wezterm.font("DejaVuSansM Nerd Font Mono")
 config.term = "wezterm"
 config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
