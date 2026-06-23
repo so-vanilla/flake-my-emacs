@@ -65,6 +65,23 @@
   ((make-backup-files . nil)
    (backup-inhibited . nil)))
 
+(leaf savehist
+  :tag "builtin"
+  :global-minor-mode savehist-mode
+  :custom
+  ((history-length . 500)
+   (savehist-autosave-interval . 300)
+   (savehist-additional-variables . '(search-ring regexp-search-ring compile-history))))
+
+(leaf uniquify
+  :tag "builtin"
+  :require t
+  :custom
+  ((uniquify-buffer-name-style . 'forward)
+   (uniquify-separator . "/")
+   (uniquify-after-kill-buffer-p . t)
+   (uniquify-ignore-buffers-re . "^\\*")))
+
 (leaf simple
   :tag "builtin"
   :preface
@@ -251,6 +268,12 @@ _r_: redo
   :custom
   ((isearch-allow-scroll . t)))
 
+(leaf winner
+  :tag "builtin"
+  :global-minor-mode winner-mode
+  :custom
+  ((winner-dont-bind-my-keys . t)))
+
 (leaf avy
   :bind
   (("C-;" . avy-goto-char-in-line)
@@ -312,16 +335,20 @@ _s_: splice     _}_: barf-forward
     (:hint nil)
     "
 ^Direction^
-^^-----------
+^^-----------^Layout^
 _C-f_: right
 _C-b_: left
 _C-p_: up
 _C-n_: down
+^^           _u_: undo
+^^           _r_: redo
 "
     ("C-f" windmove-right)
     ("C-b" windmove-left)
     ("C-p" windmove-up)
     ("C-n" windmove-down)
+    ("u" winner-undo)
+    ("r" winner-redo)
     ("C-m" nil :exit t)
     ("q" nil :exit t))))
 
@@ -424,6 +451,13 @@ _p_: prev       _l_: lower          _L_: lower all      _r_: resolve
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
+(leaf xref
+  :tag "builtin"
+  :custom
+  ((xref-search-program . 'ripgrep)
+   (xref-show-xrefs-function . #'consult-xref)
+   (xref-show-definitions-function . #'consult-xref)))
+
 (leaf corfu
   :global-minor-mode global-corfu-mode
   :custom
@@ -442,6 +476,13 @@ _p_: prev       _l_: lower          _L_: lower all      _r_: resolve
 
 (leaf yasnippet
   :global-minor-mode yas-global-mode)
+
+(leaf eldoc
+  :tag "builtin"
+  :global-minor-mode global-eldoc-mode
+  :custom
+  ((eldoc-idle-delay . 0.6)
+   (eldoc-echo-area-use-multiline-p . nil)))
 
 (leaf eglot
   :tag "builtin"
@@ -645,8 +686,68 @@ _I_: insert as item
   ((c-default-style . "gnu")
    (c-basic-offset . 4)))
 
+(leaf compile
+  :tag "builtin"
+  :custom
+  ((compilation-read-command . nil)
+   (compilation-scroll-output . 'first-error)))
+
 (leaf project
-  :tag "builtin")
+  :tag "builtin"
+  :custom
+  ((project-vc-extra-root-markers
+    . '("bb.edn"
+        "bun.lock"
+        "bun.lockb"
+        "build.gradle"
+        "build.gradle.kts"
+        "Cargo.toml"
+        "compose.yaml"
+        "deno.json"
+        "deno.jsonc"
+        "deps.edn"
+        "devenv.nix"
+        "docker-compose.yml"
+        "compose.yml"
+        "docker-compose.yaml"
+        "flake.nix"
+        "go.mod"
+        "go.work"
+        "gradlew"
+        "jsconfig.json"
+        "justfile"
+        "Justfile"
+        ".luarc.json"
+        ".luarc.jsonc"
+        "main.tf"
+        "Makefile"
+        "mise.toml"
+        "mvnw"
+        "package-lock.json"
+        "package.json"
+        "Package.swift"
+        "Pipfile"
+        "pnpm-lock.yaml"
+        "pnpm-workspace.yaml"
+        "poetry.lock"
+        "pom.xml"
+        "project.clj"
+        "pyproject.toml"
+        "requirements.txt"
+        "settings.gradle"
+        "settings.gradle.kts"
+        "setup.cfg"
+        "setup.py"
+        "shadow-cljs.edn"
+        "shell.nix"
+        "stylua.toml"
+        "Taskfile.yml"
+        "Taskfile.yaml"
+        "terraform.tf"
+        "tsconfig.json"
+        "uv.lock"
+        "versions.tf"
+        "yarn.lock"))))
 
 (leaf direnv
   :global-minor-mode direnv-mode)
