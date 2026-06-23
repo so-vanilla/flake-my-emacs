@@ -41,7 +41,7 @@ config.treat_left_ctrlalt_as_altgr = false
 config.default_prog = { "wsl.exe", "--distribution", "Ubuntu", "--cd", "~" }
 
 config.leader = {
-	key = "o",
+	key = "phys:o",
 	mods = "ALT|SHIFT",
 	timeout_milliseconds = 1500,
 }
@@ -107,6 +107,11 @@ config.keys = {
 		key = "r",
 		mods = "LEADER",
 		action = act.ReloadConfiguration,
+	},
+	{
+		key = "phys:v",
+		mods = "CTRL|SHIFT",
+		action = act.PasteFrom("Clipboard"),
 	},
 }
 
