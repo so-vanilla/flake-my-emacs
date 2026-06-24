@@ -46,7 +46,13 @@ config.enable_kitty_keyboard = true
 config.allow_win32_input_mode = false
 config.enable_csi_u_key_encoding = false
 config.treat_left_ctrlalt_as_altgr = false
-config.default_prog = { 'wsl.exe', '--distribution', 'Ubuntu', '--cd', '~' }
+-- Use PowerShell as the default program on Windows.
+-- The previous default attempted to start a specific WSL distribution (Ubuntu),
+-- which causes WezTerm to exit immediately if that distribution isn't installed.
+-- To avoid WSL-related startup errors like Wsl/Service/WSL_E_DISTRO_NOT_FOUND,
+-- use a more widely available shell instead. You can still launch WSL from
+-- within this shell when needed.
+config.default_prog = { 'powershell.exe', '-NoLogo' }
 
 -- Automatically reload configuration on save
 config.automatically_reload_config = true
