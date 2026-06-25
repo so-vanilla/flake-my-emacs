@@ -66,7 +66,7 @@ config.leader = {
 
 -- Key bindings
 config.keys = {
-  { key = '\\', mods = 'CTRL', action = act.ActivateCopyMode },
+  { key = 'e', mods = 'ALT', action = act.ActivateCopyMode },
   { key = '2', mods = 'LEADER', action = act.SplitPane{ direction = 'Down',  size = { Percent = 35 } } },
   { key = '3', mods = 'LEADER', action = act.SplitPane{ direction = 'Right', size = { Percent = 35 } } },
   { key = '0', mods = 'LEADER', action = act.CloseCurrentPane{ confirm = true } },
