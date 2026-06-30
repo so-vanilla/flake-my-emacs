@@ -143,26 +143,31 @@
             ".config/zellij/layouts/workspace.kdl".source = ./zellij/layouts/workspace.kdl;
           };
         };
+      perSystemOutputs = inputs.flake-utils.lib.eachDefaultSystem (
+        system:
+        let
+          pkgs = mkPkgs system;
+          treeSitterGrammarBundle = mkTreeSitterGrammarBundle pkgs;
+        in
+        {
+          packages = {
+            default = pkgs.emacs-unstable-nox;
+            emacs = pkgs.emacs-unstable-nox;
+            tree-sitter-grammars = treeSitterGrammarBundle;
+            wezterm-config = mkWeztermConfig pkgs;
+            windows-wezterm-config = mkWindowsWeztermConfig pkgs;
+            zellij-config = mkZellijConfig pkgs;
+            zellij-workspace-layout = mkZellijWorkspaceLayout pkgs;
+          };
+
+          homeManagerModules.default = homeManagerModule;
+        }
+      );
     in
-    inputs.flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = mkPkgs system;
-        treeSitterGrammarBundle = mkTreeSitterGrammarBundle pkgs;
-      in
-      {
-        packages = {
-          default = pkgs.emacs-unstable-nox;
-          emacs = pkgs.emacs-unstable-nox;
-          tree-sitter-grammars = treeSitterGrammarBundle;
-          wezterm-config = mkWeztermConfig pkgs;
-          windows-wezterm-config = mkWindowsWeztermConfig pkgs;
-          zellij-config = mkZellijConfig pkgs;
-          zellij-workspace-layout = mkZellijWorkspaceLayout pkgs;
-        };
-      }
-    )
+    perSystemOutputs
     // {
-      homeManagerModules.default = homeManagerModule;
+      homeManagerModules = perSystemOutputs.homeManagerModules // {
+        default = homeManagerModule;
+      };
     };
 }
