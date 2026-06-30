@@ -91,6 +91,10 @@
           ]
           ++ lib.optionals pkgs.stdenv.isLinux [ pkgs.wl-clipboard ];
 
+        terminalTools = with pkgs; [
+          zellij
+        ];
+
         weztermConfig = pkgs.writeText "wezterm.lua" (builtins.readFile ./wezterm/wezterm.lua);
         windowsWeztermConfig = pkgs.writeText "windows.wezterm.lua" (
           builtins.readFile ./wezterm/windows.wezterm.lua
@@ -99,7 +103,7 @@
         homeManagerModule =
           { lib, ... }:
           {
-            home.packages = languageTools;
+            home.packages = languageTools ++ terminalTools;
 
             home.sessionVariables = {
               EDITOR = lib.mkOverride 900 "emacsclient -t";
