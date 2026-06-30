@@ -7,11 +7,31 @@ local zellij_session_counter = 0
 
 math.randomseed(os.time())
 
+local WSL_DISTRIBUTION = "FedoraLinux-44"
+local WSL_CWD = "~"
+
+local function wsl_default_prog()
+	return { "wsl.exe", "--distribution", WSL_DISTRIBUTION, "--cd", WSL_CWD }
+end
+
 local function zellij_command(...)
-	local command = { "zellij" }
+	local command = {
+		"wsl.exe",
+		"--distribution",
+		WSL_DISTRIBUTION,
+		"--cd",
+		WSL_CWD,
+		"--",
+		"bash",
+		"-lc",
+		'unset ZELLIJ ZELLIJ_SESSION_NAME; exec zellij "$@"',
+		"zellij",
+	}
+
 	for _, arg in ipairs({ ... }) do
 		table.insert(command, arg)
 	end
+
 	return command
 end
 
@@ -114,7 +134,7 @@ end
 -- Basic configuration
 config.color_scheme = "Catppuccin Latte"
 config.font = wezterm.font("DejaVuSansM Nerd Font Mono")
-config.term = "wezterm"
+config.term = "xterm-256color"
 config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
 config.window_close_confirmation = "NeverPrompt"
@@ -126,13 +146,9 @@ config.enable_kitty_keyboard = true
 config.allow_win32_input_mode = false
 config.enable_csi_u_key_encoding = false
 config.treat_left_ctrlalt_as_altgr = false
--- Use PowerShell as the default program on Windows.
--- The previous default attempted to start a specific WSL distribution (Ubuntu),
--- which causes WezTerm to exit immediately if that distribution isn't installed.
--- To avoid WSL-related startup errors like Wsl/Service/WSL_E_DISTRO_NOT_FOUND,
--- use a more widely available shell instead. You can still launch WSL from
--- within this shell when needed.
-config.default_prog = { "powershell.exe", "-NoLogo" }
+-- Start Fedora WSL by default. Zellij commands are also executed inside this
+-- distribution so Windows-native and WSL Zellij sessions do not diverge.
+config.default_prog = wsl_default_prog()
 
 -- Automatically reload configuration on save
 config.automatically_reload_config = true
