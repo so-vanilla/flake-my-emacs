@@ -1,0 +1,5 @@
+layout {
+    pane command="bash" close_on_exit=false {
+        args "-lc" "exec \"${SHELL:-bash}\" -l"
+    }
+}
