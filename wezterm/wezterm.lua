@@ -122,7 +122,7 @@ end
 -- Basic configuration
 config.color_scheme = "Catppuccin Latte"
 config.font = wezterm.font("DejaVuSansM Nerd Font Mono")
-config.term = "wezterm"
+config.term = "xterm-256color"
 config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
 config.window_close_confirmation = "NeverPrompt"
