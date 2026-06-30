@@ -19,6 +19,8 @@ mouse_hover_effects false
 on_force_close "detach"
 session_serialization true
 
+support_kitty_keyboard_protocol false
+
 keybinds clear-defaults=true {
     locked {
         bind "Ctrl \\" { SwitchToMode "Normal"; }
