@@ -40,6 +40,33 @@ local function zellij_spawn_command(args)
 	}
 end
 
+local function bind_cmd_as_meta(keys, include_shift)
+	for _, key in ipairs(keys) do
+		table.insert(config.keys, {
+			key = key,
+			mods = "CMD",
+			action = act.SendKey { key = key, mods = "ALT" },
+		})
+		if include_shift then
+			table.insert(config.keys, {
+				key = key,
+				mods = "CMD|SHIFT",
+				action = act.SendKey { key = key, mods = "ALT|SHIFT" },
+			})
+		end
+	end
+end
+
+local function bind_cmd_shift_as_meta(keys)
+	for _, key in ipairs(keys) do
+		table.insert(config.keys, {
+			key = key,
+			mods = "CMD|SHIFT",
+			action = act.SendKey { key = key, mods = "ALT|SHIFT" },
+		})
+	end
+end
+
 config.color_scheme = "Catppuccin Latte"
 config.font = wezterm.font("DejaVuSansM Nerd Font Mono")
 config.term = "xterm-256color"
@@ -95,5 +122,71 @@ config.keys = {
 
 	{ key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
 }
+
+bind_cmd_as_meta({
+	"a",
+	"b",
+	"c",
+	"d",
+	"e",
+	"f",
+	"g",
+	"h",
+	"i",
+	"j",
+	"k",
+	"l",
+	"m",
+	"n",
+	"o",
+	"p",
+	"q",
+	"r",
+	"s",
+	"t",
+	"u",
+	"v",
+	"w",
+	"x",
+	"y",
+	"z",
+	"Space",
+	"Backspace",
+	"Enter",
+	"Escape",
+	"Tab",
+	"`",
+	"-",
+	"=",
+	"[",
+	"]",
+	"\\",
+	";",
+	"'",
+	",",
+	".",
+	"/",
+	"LeftArrow",
+	"RightArrow",
+	"UpArrow",
+	"DownArrow",
+	"Home",
+	"End",
+	"PageUp",
+	"PageDown",
+}, true)
+
+bind_cmd_shift_as_meta({
+	"1",
+	"2",
+	"3",
+	"4",
+	"5",
+	"6",
+	"7",
+	"8",
+	"9",
+	"0",
+})
 
 return config
