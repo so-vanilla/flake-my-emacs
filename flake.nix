@@ -96,7 +96,13 @@
 
       mkTerminalTools = pkgs: with pkgs; [ zellij ];
 
-      mkWeztermConfig = pkgs: pkgs.writeText "wezterm.lua" (builtins.readFile ./wezterm/wezterm.lua);
+      mkWeztermConfigText =
+        pkgs:
+        ''
+          local MY_EMACS_ZELLIJ = "${pkgs.zellij}/bin/zellij"
+        ''
+        + builtins.readFile ./wezterm/wezterm.lua;
+      mkWeztermConfig = pkgs: pkgs.writeText "wezterm.lua" (mkWeztermConfigText pkgs);
       mkWindowsWeztermConfig =
         pkgs: pkgs.writeText "windows.wezterm.lua" (builtins.readFile ./wezterm/windows.wezterm.lua);
       mkZellijConfig = pkgs: pkgs.writeText "config.kdl" (builtins.readFile ./zellij/config.kdl);
@@ -127,7 +133,7 @@
           programs.wezterm = {
             enable = true;
             package = modulePkgs.wezterm;
-            extraConfig = builtins.readFile ./wezterm/wezterm.lua;
+            extraConfig = mkWeztermConfigText modulePkgs;
           };
 
           services.emacs = {

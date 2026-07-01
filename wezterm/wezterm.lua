@@ -3,6 +3,7 @@ local act = wezterm.action
 local mux = wezterm.mux
 
 local config = wezterm.config_builder()
+local ZELLIJ = MY_EMACS_ZELLIJ or "zellij"
 
 local ZELLIJ_WORKSPACES = {
 	"wz-01",
@@ -18,7 +19,7 @@ local ZELLIJ_WORKSPACES = {
 }
 
 local function zellij_command(...)
-	local command = { "env", "-u", "ZELLIJ", "-u", "ZELLIJ_SESSION_NAME", "zellij" }
+	local command = { "env", "-u", "ZELLIJ", "-u", "ZELLIJ_SESSION_NAME", ZELLIJ }
 	for _, arg in ipairs({ ... }) do
 		table.insert(command, arg)
 	end
