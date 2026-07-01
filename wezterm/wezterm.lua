@@ -47,11 +47,21 @@ local function bind_cmd_as_meta(keys, include_shift)
 			mods = "CMD",
 			action = act.SendKey { key = key, mods = "ALT" },
 		})
+		table.insert(config.keys, {
+			key = key,
+			mods = "CMD|CTRL",
+			action = act.SendKey { key = key, mods = "ALT|CTRL" },
+		})
 		if include_shift then
 			table.insert(config.keys, {
 				key = key,
 				mods = "CMD|SHIFT",
 				action = act.SendKey { key = key, mods = "ALT|SHIFT" },
+			})
+			table.insert(config.keys, {
+				key = key,
+				mods = "CMD|CTRL|SHIFT",
+				action = act.SendKey { key = key, mods = "ALT|CTRL|SHIFT" },
 			})
 		end
 	end
@@ -63,6 +73,16 @@ local function bind_cmd_shift_as_meta(keys)
 			key = key,
 			mods = "CMD|SHIFT",
 			action = act.SendKey { key = key, mods = "ALT|SHIFT" },
+		})
+		table.insert(config.keys, {
+			key = key,
+			mods = "CMD|CTRL",
+			action = act.SendKey { key = key, mods = "ALT|CTRL" },
+		})
+		table.insert(config.keys, {
+			key = key,
+			mods = "CMD|CTRL|SHIFT",
+			action = act.SendKey { key = key, mods = "ALT|CTRL|SHIFT" },
 		})
 	end
 end
