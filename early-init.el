@@ -1,4 +1,4 @@
-;;; early-init.el --- My early-init.el
+;;; early-init.el --- My early-init.el -*- lexical-binding: t; -*-
 
 ;; Author: Shuto Omura <somura-vanilla@so-icecream.com>
 
