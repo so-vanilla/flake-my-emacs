@@ -14,6 +14,8 @@
     (not (null (member current-host private-hosts)))))
 
 (load (expand-file-name "private.el" user-emacs-directory) t)
+(when (getenv "EMACS_PROJECT_DAEMON")
+  (load custom-file t))
 
 (require 'leaf)
 (require 'leaf-keywords)
@@ -31,7 +33,7 @@
       ring-bell-function #'ignore
       use-file-dialog nil
       use-short-answers t
-      create-lockfiles nil
+      create-lockfiles t
       tab-width 4
       gc-cons-threshold 10000000
       read-process-output-max 1048576
@@ -750,7 +752,10 @@ _I_: insert as item
         "yarn.lock"))))
 
 (leaf direnv
-  :global-minor-mode direnv-mode)
+  :require t
+  :config
+  (unless (getenv "EMACS_PROJECT_DAEMON")
+    (direnv-mode 1)))
 
 (leaf docker
   :custom
@@ -797,7 +802,8 @@ _I_: insert as item
   (setf (alist-get 'toml-ts-mode apheleia-mode-alist) 'taplo))
 
 (leaf exec-path-from-shell
-  :when (eq system-type 'darwin)
+  :when (and (eq system-type 'darwin)
+             (not (getenv "EMACS_PROJECT_DAEMON")))
   :require t
   :config
   (exec-path-from-shell-initialize))

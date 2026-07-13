@@ -96,6 +96,30 @@
 
       mkTerminalTools = pkgs: with pkgs; [ zellij ];
 
+      mkEmacsProjectDaemon =
+        pkgs: emacsPackage:
+        pkgs.writeShellApplication {
+          name = "emacs-project-daemon";
+          runtimeInputs = [
+            emacsPackage
+            pkgs.coreutils
+            pkgs.flock
+            pkgs.git
+          ];
+          text = builtins.readFile ./scripts/emacs-project-daemon.sh;
+        };
+
+      mkEmacsclientSmart =
+        pkgs: emacsPackage: emacsProjectDaemon:
+        pkgs.writeShellApplication {
+          name = "emacsclient-smart";
+          runtimeInputs = [
+            emacsPackage
+            emacsProjectDaemon
+          ];
+          text = builtins.readFile ./scripts/emacsclient-smart.sh;
+        };
+
       mkWeztermConfigText =
         pkgs:
         ''
@@ -110,18 +134,32 @@
         pkgs: pkgs.writeText "workspace.kdl" (builtins.readFile ./zellij/layouts/workspace.kdl);
 
       homeManagerModule =
-        { lib, pkgs, ... }:
+        {
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
         let
           modulePkgs = mkPkgs pkgs.stdenv.hostPlatform.system;
           treeSitterGrammarBundle = mkTreeSitterGrammarBundle modulePkgs;
+          emacsProjectDaemon =
+            mkEmacsProjectDaemon modulePkgs config.programs.emacs.finalPackage;
+          emacsclientSmart =
+            mkEmacsclientSmart modulePkgs config.programs.emacs.finalPackage emacsProjectDaemon;
         in
         {
-          home.packages = mkLanguageTools modulePkgs ++ mkTerminalTools modulePkgs;
+          home.packages =
+            mkLanguageTools modulePkgs
+            ++ mkTerminalTools modulePkgs
+            ++ [
+              emacsProjectDaemon
+              emacsclientSmart
+            ];
 
           home.sessionVariables = {
-            EDITOR = lib.mkOverride 900 "emacsclient -t";
-            VISUAL = lib.mkOverride 900 "emacsclient -t";
-            ALTERNATE_EDITOR = lib.mkDefault "";
+            EDITOR = lib.mkOverride 900 "emacsclient-smart -t";
+            VISUAL = lib.mkOverride 900 "emacsclient-smart -t";
           };
 
           programs.emacs = {
@@ -137,8 +175,7 @@
           };
 
           services.emacs = {
-            enable = true;
-            client.enable = true;
+            enable = lib.mkForce false;
           };
 
           home.file = {
@@ -154,6 +191,12 @@
         let
           pkgs = mkPkgs system;
           treeSitterGrammarBundle = mkTreeSitterGrammarBundle pkgs;
+          configuredEmacs =
+            (pkgs.emacsPackagesFor pkgs.emacs-unstable-nox).emacsWithPackages (
+              import ./epkgs { inherit pkgs; }
+            );
+          emacsProjectDaemon = mkEmacsProjectDaemon pkgs configuredEmacs;
+          emacsclientSmart = mkEmacsclientSmart pkgs configuredEmacs emacsProjectDaemon;
         in
         {
           packages = {
@@ -164,6 +207,8 @@
             windows-wezterm-config = mkWindowsWeztermConfig pkgs;
             zellij-config = mkZellijConfig pkgs;
             zellij-workspace-layout = mkZellijWorkspaceLayout pkgs;
+            emacs-project-daemon = emacsProjectDaemon;
+            emacsclient-smart = emacsclientSmart;
           };
 
           homeManagerModules.default = homeManagerModule;
