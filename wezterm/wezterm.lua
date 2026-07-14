@@ -140,6 +140,22 @@ config.keys = {
 	{ key = "9", mods = "CMD", action = act.ActivateTab(8) },
 	{ key = "0", mods = "CMD", action = act.ActivateTab(9) },
 
+	-- Legacy terminal input cannot distinguish Ctrl+; from plain ;.
+	-- Send CSI-u for ASCII 59 with the Ctrl modifier.
+	{
+		key = ";",
+		mods = "CTRL",
+		action = act.SendString("\x1b[59;5u"),
+	},
+
+	-- Zellij does not reconstruct Ctrl+\ from legacy byte 0x1c.
+	-- Send CSI-u for ASCII 92 with the Ctrl modifier.
+	{
+		key = "\\",
+		mods = "CTRL",
+		action = act.SendString("\x1b[92;5u"),
+	},
+
 	{ key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
 }
 
