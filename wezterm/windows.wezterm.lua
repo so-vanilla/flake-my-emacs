@@ -71,7 +71,6 @@ config.automatically_reload_config = true
 config.disable_default_key_bindings = true
 config.disable_default_mouse_bindings = true
 config.show_new_tab_button_in_tab_bar = false
-config.show_close_tab_button_in_tabs = false
 
 config.default_prog = wsl_default_prog()
 config.enable_kitty_keyboard = true
