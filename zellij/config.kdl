@@ -48,7 +48,7 @@ keybinds clear-defaults=true {
             SwitchToMode "Locked";
         }
 
-        bind "s" { SwitchToMode "Scroll"; }
+        bind "s" { EditScrollback; SwitchToMode "Locked"; }
     }
 
     scroll {
