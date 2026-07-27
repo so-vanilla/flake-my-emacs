@@ -631,8 +631,7 @@ _I_: insert as item
 
 (leaf csv-mode
   :hook
-  ((csv-mode-hook . csv-align-mode)
-   (tsv-mode-hook . csv-align-mode)))
+  ((csv-mode-hook . csv-align-mode)))
 
 (leaf bash-ts-mode
   :tag "builtin"
