@@ -629,6 +629,11 @@ _I_: insert as item
          ("s" "Schedule" entry (file "~/org/schedule.org")
           "* %?\n")))))
 
+(leaf csv-mode
+  :hook
+  ((csv-mode-hook . csv-align-mode)
+   (tsv-mode-hook . csv-align-mode)))
+
 (leaf bash-ts-mode
   :tag "builtin"
   :mode "\\.sh\\'" "\\.bash\\'")
