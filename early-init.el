@@ -51,6 +51,9 @@
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 
+(add-hook 'csv-mode-hook #'csv-align-mode)
+(add-hook 'tsv-mode-hook #'csv-align-mode)
+
 (provide 'early-init)
 
 ;;; early-init.el ends here
