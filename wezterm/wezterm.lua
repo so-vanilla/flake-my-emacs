@@ -5,6 +5,35 @@ local mux = wezterm.mux
 local config = wezterm.config_builder()
 local ZELLIJ = MY_EMACS_ZELLIJ or "zellij"
 
+local US_SHIFTED_META_CHARS = {
+	["`"] = "~",
+	["1"] = "!",
+	["2"] = "@",
+	["3"] = "#",
+	["4"] = "$",
+	["5"] = "%",
+	["6"] = "^",
+	["7"] = "&",
+	["8"] = "*",
+	["9"] = "(",
+	["0"] = ")",
+	["-"] = "_",
+	["="] = "+",
+	["["] = "{",
+	["]"] = "}",
+	["\\"] = "|",
+	[";"] = ":",
+	["'"] = "\"",
+	[","] = "<",
+	["."] = ">",
+	["/"] = "?",
+}
+
+for code = string.byte("a"), string.byte("z") do
+	local key = string.char(code)
+	US_SHIFTED_META_CHARS[key] = string.upper(key)
+end
+
 local ZELLIJ_WORKSPACES = {
 	"wz-01",
 	"wz-02",
@@ -40,6 +69,15 @@ local function zellij_spawn_command(args)
 	}
 end
 
+local function cmd_shift_as_meta_action(key)
+	local shifted_char = US_SHIFTED_META_CHARS[key]
+	if shifted_char then
+		return act.SendString("\27" .. shifted_char)
+	end
+
+	return act.SendKey { key = key, mods = "ALT|SHIFT" }
+end
+
 local function bind_cmd_as_meta(keys, include_shift)
 	for _, key in ipairs(keys) do
 		table.insert(config.keys, {
@@ -56,7 +94,7 @@ local function bind_cmd_as_meta(keys, include_shift)
 			table.insert(config.keys, {
 				key = key,
 				mods = "CMD|SHIFT",
-				action = act.SendKey { key = key, mods = "ALT|SHIFT" },
+				action = cmd_shift_as_meta_action(key),
 			})
 			table.insert(config.keys, {
 				key = key,
@@ -72,7 +110,7 @@ local function bind_cmd_shift_as_meta(keys)
 		table.insert(config.keys, {
 			key = key,
 			mods = "CMD|SHIFT",
-			action = act.SendKey { key = key, mods = "ALT|SHIFT" },
+			action = cmd_shift_as_meta_action(key),
 		})
 		table.insert(config.keys, {
 			key = key,
@@ -95,6 +133,8 @@ config.use_fancy_tab_bar = false
 config.window_close_confirmation = "NeverPrompt"
 config.scrollback_lines = 20000
 config.automatically_reload_config = true
+config.use_ime = true
+config.macos_forward_to_ime_modifier_mask = "SHIFT|CTRL"
 
 config.disable_default_key_bindings = true
 config.disable_default_mouse_bindings = true
