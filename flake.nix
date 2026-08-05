@@ -96,6 +96,13 @@
 
       mkTerminalTools = pkgs: with pkgs; [ zellij ];
 
+      mkZellijRoomPlugin =
+        pkgs:
+        pkgs.fetchurl {
+          url = "https://github.com/rvcas/room/releases/download/v1.2.1/room.wasm";
+          hash = "sha256-kLSDpAt2JGj7dYYhYFh6BfvtzVwTrcs+0jHwG/nActE=";
+        };
+
       mkEmacsProjectDaemon =
         pkgs: emacsPackage:
         pkgs.writeShellApplication {
@@ -120,13 +127,8 @@
           text = builtins.readFile ./scripts/emacsclient-smart.sh;
         };
 
-      mkWeztermConfigText =
-        pkgs:
-        ''
-          local MY_EMACS_ZELLIJ = "${pkgs.zellij}/bin/zellij"
-        ''
-        + builtins.readFile ./wezterm/wezterm.lua;
-      mkWeztermConfig = pkgs: pkgs.writeText "wezterm.lua" (mkWeztermConfigText pkgs);
+      mkWeztermConfigText = builtins.readFile ./wezterm/wezterm.lua;
+      mkWeztermConfig = pkgs: pkgs.writeText "wezterm.lua" mkWeztermConfigText;
       mkWindowsWeztermConfig =
         pkgs: pkgs.writeText "windows.wezterm.lua" (builtins.readFile ./wezterm/windows.wezterm.lua);
       mkZellijConfig = pkgs: pkgs.writeText "config.kdl" (builtins.readFile ./zellij/config.kdl);
@@ -147,6 +149,7 @@
             mkEmacsProjectDaemon modulePkgs config.programs.emacs.finalPackage;
           emacsclientSmart =
             mkEmacsclientSmart modulePkgs config.programs.emacs.finalPackage emacsProjectDaemon;
+          zellijRoomPlugin = mkZellijRoomPlugin modulePkgs;
         in
         {
           home.packages =
@@ -171,7 +174,7 @@
           programs.wezterm = {
             enable = true;
             package = modulePkgs.wezterm;
-            extraConfig = mkWeztermConfigText modulePkgs;
+            extraConfig = mkWeztermConfigText;
           };
 
           services.emacs = {
@@ -184,6 +187,7 @@
             ".emacs.d/tree-sitter-grammars".source = treeSitterGrammarBundle;
             ".config/zellij/config.kdl".source = ./zellij/config.kdl;
             ".config/zellij/layouts/workspace.kdl".source = ./zellij/layouts/workspace.kdl;
+            ".config/zellij/plugins/room.wasm".source = zellijRoomPlugin;
           };
         };
       perSystemOutputs = inputs.flake-utils.lib.eachDefaultSystem (
@@ -207,6 +211,7 @@
             windows-wezterm-config = mkWindowsWeztermConfig pkgs;
             zellij-config = mkZellijConfig pkgs;
             zellij-workspace-layout = mkZellijWorkspaceLayout pkgs;
+            zellij-room-plugin = mkZellijRoomPlugin pkgs;
             emacs-project-daemon = emacsProjectDaemon;
             emacsclient-smart = emacsclientSmart;
           };

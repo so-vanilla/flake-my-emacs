@@ -23,11 +23,23 @@ support_kitty_keyboard_protocol false
 
 keybinds clear-defaults=true {
     locked {
-        bind "Ctrl \\" { SwitchToMode "Normal"; }
+        bind "Alt z" { SwitchToMode "Normal"; }
     }
 
     normal {
-        bind "Esc" "Ctrl \\" { SwitchToMode "Locked"; }
+        bind "Esc" { SwitchToMode "Locked"; }
+
+        bind "Alt z" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/room.wasm" {
+                floating true
+                ignore_case true
+            };
+            SwitchToMode "Locked";
+        }
+
+        bind "t" { NewTab; SwitchToMode "Locked"; }
+        bind "r" { SwitchToMode "RenameTab"; TabNameInput 0; }
+        bind "x" { CloseTab; SwitchToMode "Locked"; }
 
         bind "2" { NewPane "Down"; SwitchToMode "Locked"; }
         bind "3" { NewPane "Right"; SwitchToMode "Locked"; }
@@ -51,6 +63,11 @@ keybinds clear-defaults=true {
         bind "s" { EditScrollback; SwitchToMode "Locked"; }
     }
 
+    renametab {
+        bind "Enter" { SwitchToMode "Locked"; }
+        bind "Esc" "Ctrl c" { UndoRenameTab; SwitchToMode "Locked"; }
+    }
+
     scroll {
         bind "Esc" "Enter" { SwitchToMode "Locked"; }
         bind "j" "Down" { ScrollDown; }
@@ -60,5 +77,18 @@ keybinds clear-defaults=true {
         bind "d" { HalfPageScrollDown; }
         bind "u" { HalfPageScrollUp; }
         bind "y" { Copy; SwitchToMode "Locked"; }
+    }
+
+    shared_except "renametab" {
+        bind "Alt 1" { GoToTab 1; SwitchToMode "Locked"; }
+        bind "Alt 2" { GoToTab 2; SwitchToMode "Locked"; }
+        bind "Alt 3" { GoToTab 3; SwitchToMode "Locked"; }
+        bind "Alt 4" { GoToTab 4; SwitchToMode "Locked"; }
+        bind "Alt 5" { GoToTab 5; SwitchToMode "Locked"; }
+        bind "Alt 6" { GoToTab 6; SwitchToMode "Locked"; }
+        bind "Alt 7" { GoToTab 7; SwitchToMode "Locked"; }
+        bind "Alt 8" { GoToTab 8; SwitchToMode "Locked"; }
+        bind "Alt 9" { GoToTab 9; SwitchToMode "Locked"; }
+        bind "Alt 0" { GoToTab 10; SwitchToMode "Locked"; }
     }
 }
