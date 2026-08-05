@@ -505,6 +505,7 @@ _p_: prev       _l_: lower          _L_: lower all      _r_: resolve
    (yaml-ts-mode-hook . eglot-ensure))
   :custom
   ((eglot-autoshutdown . t)
+   (eglot-sync-connect . 0)
    (eglot-events-buffer-size . 0)
    (eglot-confirm-server-initiated-edits . nil))
   :config
