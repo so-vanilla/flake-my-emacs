@@ -4,6 +4,13 @@
 
 ;;; Code:
 
+(let ((lisp-directory (expand-file-name "lisp" user-emacs-directory)))
+  ;; Home Manager deploys this directory recursively.  Keep both the root
+  ;; and ADE's adapter directory on `load-path' so `ade.el' may be supplied
+  ;; either beside the subdirectory or by the ADE source bundle.
+  (add-to-list 'load-path lisp-directory)
+  (add-to-list 'load-path (expand-file-name "ade" lisp-directory)))
+
 (defmacro when-darwin (&rest body)
   (when (eq system-type 'darwin)
     `(progn ,@body)))
@@ -14,12 +21,13 @@
     (not (null (member current-host private-hosts)))))
 
 (load (expand-file-name "private.el" user-emacs-directory) t)
-(when (getenv "EMACS_PROJECT_DAEMON")
-  (load custom-file t))
 
 (require 'leaf)
 (require 'leaf-keywords)
 (leaf-keywords-init)
+
+(require 'ade-platform)
+(ade-platform-initialize)
 
 (leaf leaf-convert)
 (leaf leaf-tree)
@@ -759,8 +767,7 @@ _I_: insert as item
 (leaf direnv
   :require t
   :config
-  (unless (getenv "EMACS_PROJECT_DAEMON")
-    (direnv-mode 1)))
+  (direnv-mode 1))
 
 (leaf docker
   :custom
@@ -807,8 +814,7 @@ _I_: insert as item
   (setf (alist-get 'toml-ts-mode apheleia-mode-alist) 'taplo))
 
 (leaf exec-path-from-shell
-  :when (and (eq system-type 'darwin)
-             (not (getenv "EMACS_PROJECT_DAEMON")))
+  :when (eq system-type 'darwin)
   :require t
   :config
   (exec-path-from-shell-initialize))
@@ -828,6 +834,12 @@ _I_: insert as item
   ((catppuccin-flavor . 'latte))
   :config
   (load-theme 'catppuccin :no-confirm))
+
+;; One ordinary Emacs process owns the standard server.  Keep this after the
+;; rest of startup so batch evaluation never creates a socket and the ADE
+;; package is loaded only after its platform edge has been initialized.
+(ade-platform-start-standard-server)
+(require 'ade)
 
 (provide 'init)
 

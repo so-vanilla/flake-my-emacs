@@ -11,3 +11,4 @@ import ./leaf.nix { inherit epkgs; }
 ++ import ./language.nix { inherit epkgs; }
 ++ import ./utils.nix { inherit epkgs; }
 ++ import ./appearance.nix { inherit epkgs; }
+++ import ./ade.nix { inherit epkgs; }

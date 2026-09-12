@@ -22,11 +22,14 @@
           overlays = [ emacsOverlay ];
         };
 
+      mkEmacsPackage =
+        pkgs: if pkgs.stdenv.hostPlatform.isDarwin then pkgs.emacs-unstable else pkgs.emacs-unstable-pgtk;
+
       mkTreeSitterGrammarBundle =
         pkgs:
         let
           lib = pkgs.lib;
-          sharedLibrarySuffix = if pkgs.stdenv.isDarwin then "dylib" else "so";
+          sharedLibrarySuffix = if pkgs.stdenv.hostPlatform.isDarwin then "dylib" else "so";
 
           grammars = with pkgs.tree-sitter-grammars; {
             bash = tree-sitter-bash;
@@ -92,7 +95,7 @@
           vscode-langservers-extracted
           yaml-language-server
         ]
-        ++ pkgs.lib.optionals pkgs.stdenv.isLinux [ pkgs.wl-clipboard ];
+        ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.wl-clipboard ];
 
       mkTerminalTools = pkgs: with pkgs; [ zellij ];
 
@@ -101,30 +104,6 @@
         pkgs.fetchurl {
           url = "https://github.com/rvcas/room/releases/download/v1.2.1/room.wasm";
           hash = "sha256-kLSDpAt2JGj7dYYhYFh6BfvtzVwTrcs+0jHwG/nActE=";
-        };
-
-      mkEmacsProjectDaemon =
-        pkgs: emacsPackage:
-        pkgs.writeShellApplication {
-          name = "emacs-project-daemon";
-          runtimeInputs = [
-            emacsPackage
-            pkgs.coreutils
-            pkgs.flock
-            pkgs.git
-          ];
-          text = builtins.readFile ./scripts/emacs-project-daemon.sh;
-        };
-
-      mkEmacsclientSmart =
-        pkgs: emacsPackage: emacsProjectDaemon:
-        pkgs.writeShellApplication {
-          name = "emacsclient-smart";
-          runtimeInputs = [
-            emacsPackage
-            emacsProjectDaemon
-          ];
-          text = builtins.readFile ./scripts/emacsclient-smart.sh;
         };
 
       mkWeztermConfigText = builtins.readFile ./wezterm/wezterm.lua;
@@ -137,7 +116,6 @@
 
       homeManagerModule =
         {
-          config,
           lib,
           pkgs,
           ...
@@ -145,29 +123,20 @@
         let
           modulePkgs = mkPkgs pkgs.stdenv.hostPlatform.system;
           treeSitterGrammarBundle = mkTreeSitterGrammarBundle modulePkgs;
-          emacsProjectDaemon =
-            mkEmacsProjectDaemon modulePkgs config.programs.emacs.finalPackage;
-          emacsclientSmart =
-            mkEmacsclientSmart modulePkgs config.programs.emacs.finalPackage emacsProjectDaemon;
+          emacsPackage = mkEmacsPackage modulePkgs;
           zellijRoomPlugin = mkZellijRoomPlugin modulePkgs;
         in
         {
-          home.packages =
-            mkLanguageTools modulePkgs
-            ++ mkTerminalTools modulePkgs
-            ++ [
-              emacsProjectDaemon
-              emacsclientSmart
-            ];
+          home.packages = mkLanguageTools modulePkgs ++ mkTerminalTools modulePkgs;
 
           home.sessionVariables = {
-            EDITOR = lib.mkOverride 900 "emacsclient-smart -t";
-            VISUAL = lib.mkOverride 900 "emacsclient-smart -t";
+            EDITOR = lib.mkOverride 900 "emacsclient -t";
+            VISUAL = lib.mkOverride 900 "emacsclient -t";
           };
 
           programs.emacs = {
             enable = true;
-            package = modulePkgs.emacs-unstable-nox;
+            package = emacsPackage;
             extraPackages = import ./epkgs { pkgs = modulePkgs; };
           };
 
@@ -184,6 +153,8 @@
           home.file = {
             ".emacs.d/init.el".source = ./init.el;
             ".emacs.d/early-init.el".source = ./early-init.el;
+            ".emacs.d/lisp".source = ./.emacs.d/lisp;
+            ".ddskk/init".source = ./.ddskk/init;
             ".emacs.d/tree-sitter-grammars".source = treeSitterGrammarBundle;
             ".config/zellij/config.kdl".source = ./zellij/config.kdl;
             ".config/zellij/layouts/workspace.kdl".source = ./zellij/layouts/workspace.kdl;
@@ -195,25 +166,21 @@
         let
           pkgs = mkPkgs system;
           treeSitterGrammarBundle = mkTreeSitterGrammarBundle pkgs;
-          configuredEmacs =
-            (pkgs.emacsPackagesFor pkgs.emacs-unstable-nox).emacsWithPackages (
-              import ./epkgs { inherit pkgs; }
-            );
-          emacsProjectDaemon = mkEmacsProjectDaemon pkgs configuredEmacs;
-          emacsclientSmart = mkEmacsclientSmart pkgs configuredEmacs emacsProjectDaemon;
+          emacsPackage = mkEmacsPackage pkgs;
+          configuredEmacs = (pkgs.emacsPackagesFor emacsPackage).emacsWithPackages (
+            import ./epkgs { inherit pkgs; }
+          );
         in
         {
           packages = {
-            default = pkgs.emacs-unstable-nox;
-            emacs = pkgs.emacs-unstable-nox;
+            default = configuredEmacs;
+            emacs = configuredEmacs;
             tree-sitter-grammars = treeSitterGrammarBundle;
             wezterm-config = mkWeztermConfig pkgs;
             windows-wezterm-config = mkWindowsWeztermConfig pkgs;
             zellij-config = mkZellijConfig pkgs;
             zellij-workspace-layout = mkZellijWorkspaceLayout pkgs;
             zellij-room-plugin = mkZellijRoomPlugin pkgs;
-            emacs-project-daemon = emacsProjectDaemon;
-            emacsclient-smart = emacsclientSmart;
           };
 
           homeManagerModules.default = homeManagerModule;
